@@ -1,0 +1,43 @@
+# --- Data: license-sensitive ----------------------------------------------
+# WikiHow source is CC BY-NC-SA 3.0; the corpus is released by *rehydration*
+# (Myanmar text + source URLs + the build script), never by mirroring the
+# English WikiHow text. So the parallel files stay out of the public repo.
+data/raw/
+data/processed/*.jsonl
+# A 20-row teaser (data/sample/) and the aggregate stats JSONs ARE committed.
+
+# --- Models / checkpoints / runs -------------------------------------------
+ckpt/
+checkpoints/
+*.pt
+*.bin
+*.safetensors
+runs/
+wandb/
+mlruns/
+
+# --- Python ----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.env
+.ipynb_checkpoints/
+
+# --- Internal scratch / session notes (not part of the artifact) -----------
+SESSION_STATE_*.md
+_archive/
+
+# --- AI tool artifacts (never commit) --------------------------------------
+.sixth/
+.claude/
+.cursor/
+.aider*
+.codeium/
+
+# --- OS --------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini

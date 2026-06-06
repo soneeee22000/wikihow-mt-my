@@ -1,0 +1,15 @@
+{
+  "nllb_zeroshot": {
+    "system": "nllb_zeroshot",
+    "n": 846,
+    "chrf++": 36.01,
+    "chrf++_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:2|space:no|version:2.4.1",
+    "bleu": 2.62,
+    "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.4.1",
+    "spbleu": 19.33,
+    "spbleu_tokenizer": "flores200",
+    "spbleu_signature": "nrefs:1|case:mixed|eff:no|tok:flores200|smooth:exp|version:2.4.1",
+    "comet": null,
+    "comet_note": "comet not installed; compute on Colab/GPU"
+  }
+}

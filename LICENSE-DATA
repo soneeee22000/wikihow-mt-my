@@ -1,0 +1,41 @@
+WikiHow-MY Corpus — Data License
+=================================
+
+The WikiHow-MY parallel corpus (the Myanmar post-edited translations and any
+derived data files released from this project) is licensed under:
+
+    Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported
+    (CC BY-NC-SA 3.0)
+
+    Legal code:  https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode
+    Summary:     https://creativecommons.org/licenses/by-nc-sa/3.0/
+
+Why this license
+----------------
+The English source instructions are drawn from wikiHow, which publishes its
+content under CC BY-NC-SA 3.0. The ShareAlike term requires that derivative
+works — including translations — carry the same license. NonCommercial use
+only. Attribution to wikiHow (and to this corpus) is required.
+
+How the data is released (rehydration)
+--------------------------------------
+To respect the source license, this repository does NOT redistribute the
+English wikiHow text. The corpus is released by *rehydration*:
+
+  * the Myanmar post-edited translations,
+  * the source article URLs / identifiers, and
+  * the build script (`src/data/build_splits.py`)
+
+are published so the aligned English–Myanmar pairs can be reconstructed
+locally. The raw and processed parallel files are intentionally excluded from
+version control (see `.gitignore`).
+
+Attribution
+-----------
+  * English source content: © wikiHow, CC BY-NC-SA 3.0 (https://www.wikihow.com).
+  * Myanmar translations / post-editing and corpus construction:
+    Pyae Sone Kyaw, 2026.
+
+This data license (CC BY-NC-SA 3.0) applies ONLY to the corpus/data. The
+source code in this repository is licensed separately under Apache-2.0 (see
+the `LICENSE` file).

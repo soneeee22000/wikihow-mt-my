@@ -1,0 +1,41 @@
+{
+  "total_pairs": 10056,
+  "split_sizes": {
+    "train": 8302,
+    "dev": 908,
+    "test": 846
+  },
+  "distinct_articles_clean": 82,
+  "sentences_per_article": {
+    "n": 82,
+    "min": 31,
+    "max": 274,
+    "mean": 116.8,
+    "median": 116,
+    "p95": 191
+  },
+  "english_tokens": {
+    "n": 10056,
+    "min": 1,
+    "max": 61,
+    "mean": 14.3,
+    "median": 13,
+    "p95": 28
+  },
+  "myanmar_chars": {
+    "n": 10056,
+    "min": 1,
+    "max": 490,
+    "mean": 93.0,
+    "median": 85,
+    "p95": 185
+  },
+  "myanmar_whitespace_tokens": {
+    "n": 10056,
+    "min": 1,
+    "max": 34,
+    "mean": 6.4,
+    "median": 6,
+    "p95": 13
+  }
+}

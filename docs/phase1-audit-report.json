@@ -1,0 +1,124 @@
+{
+  "candidates": {
+    "Data10KFinal (01 Translate!)": {
+      "exists": true,
+      "readable": true,
+      "rows": 10094,
+      "exact_dup_rows": 38,
+      "dup_rate_pct": 0.38,
+      "english_side_dups": 63,
+      "how_to_title_rows (≈article count)": 86
+    },
+    "Data10KFinal (Data_Vanilla)": {
+      "exists": true,
+      "readable": true,
+      "rows": 10094,
+      "exact_dup_rows": 38,
+      "dup_rate_pct": 0.38,
+      "english_side_dups": 63,
+      "how_to_title_rows (≈article count)": 86
+    },
+    "enmy10K (Data_Vanilla)": {
+      "exists": true,
+      "readable": true,
+      "rows": 3670,
+      "exact_dup_rows": 8,
+      "dup_rate_pct": 0.22,
+      "english_side_dups": 10,
+      "how_to_title_rows (≈article count)": 32
+    },
+    "enmy10K (WikiHow-MTPE)": {
+      "exists": true,
+      "readable": true,
+      "rows": 3670,
+      "exact_dup_rows": 8,
+      "dup_rate_pct": 0.22,
+      "english_side_dups": 10,
+      "how_to_title_rows (≈article count)": 32
+    },
+    "human_written_data_5K": {
+      "exists": true,
+      "readable": true,
+      "rows": 5021,
+      "exact_dup_rows": 7,
+      "dup_rate_pct": 0.14,
+      "english_side_dups": 21,
+      "how_to_title_rows (≈article count)": 44
+    },
+    "6Kdata": {
+      "exists": true,
+      "readable": true,
+      "rows": 6426,
+      "exact_dup_rows": 31,
+      "dup_rate_pct": 0.48,
+      "english_side_dups": 51,
+      "how_to_title_rows (≈article count)": 54
+    },
+    "6Kmyen": {
+      "exists": true,
+      "readable": true,
+      "rows": 6426,
+      "exact_dup_rows": 31,
+      "dup_rate_pct": 0.48,
+      "english_side_dups": 51,
+      "how_to_title_rows (≈article count)": 54
+    },
+    "athousandmore": {
+      "exists": true,
+      "readable": true,
+      "rows": 1405,
+      "exact_dup_rows": 24,
+      "dup_rate_pct": 1.71,
+      "english_side_dups": 28,
+      "how_to_title_rows (≈article count)": 10
+    },
+    "en_mm_parallel_corpus": {
+      "exists": true,
+      "readable": true,
+      "rows": 5021,
+      "exact_dup_rows": 7,
+      "dup_rate_pct": 0.14,
+      "english_side_dups": 21,
+      "how_to_title_rows (≈article count)": 44
+    },
+    "master_spreadsheet (MTPE)": {
+      "exists": true,
+      "readable": true,
+      "rows": 1405,
+      "exact_dup_rows": 24,
+      "dup_rate_pct": 1.71,
+      "english_side_dups": 28,
+      "how_to_title_rows (≈article count)": 10
+    }
+  },
+  "splits": {
+    "01 Translate!": {
+      "complete": true,
+      "sizes": {
+        "train": 8075,
+        "test": 1009,
+        "valid": 1010
+      },
+      "exact_pair_overlap_between_splits": {
+        "train∩test": 4,
+        "train∩valid": 8,
+        "test∩valid": 2
+      },
+      "leakage_detected": true
+    },
+    "Data_Vanilla": {
+      "complete": true,
+      "sizes": {
+        "train": 7065,
+        "test": 999,
+        "validate": 2030
+      },
+      "exact_pair_overlap_between_splits": {
+        "train∩test": 3,
+        "train∩validate": 12,
+        "test∩validate": 0
+      },
+      "leakage_detected": true
+    }
+  }
+}

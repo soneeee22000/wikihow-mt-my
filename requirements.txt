@@ -1,0 +1,18 @@
+# WikiHow-MY — reproducibility. Pin in camera-ready once final.
+transformers>=4.40
+datasets>=2.18
+torch>=2.1
+sentencepiece
+sacrebleu>=2.4
+unbabel-comet        # eval (COMET); installs cleanly on Linux/Colab
+myanmar-tools        # Zawgyi<->Unicode (Linux/Colab; unavailable on some Windows envs)
+pandas
+numpy
+scipy
+scikit-learn
+matplotlib
+krippendorff         # inter-annotator agreement (human eval)
+regex
+pyyaml
+tqdm
+accelerate

@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this corpus, benchmark, or the IFS metric, please cite the following."
+title: "WikiHow-MY: A Human Post-Edited English–Myanmar Instructional MT Corpus, Benchmark, and Instruction-Faithfulness Metric"
+type: software
+authors:
+  - family-names: "Kyaw"
+    given-names: "Pyae Sone"
+    alias: "Seon"
+repository-code: "https://github.com/soneeee22000/wikihow-mt-my"
+abstract: >-
+  WikiHow-MY is a ~10K-pair English-to-Myanmar instructional machine-translation
+  corpus built by human post-editing (MTPE) of wikiHow how-to articles, released
+  with article-disjoint train/dev/test splits, an NLLB-200 benchmark, and the
+  Instruction Faithfulness Score (IFS), a metric for whether a translation
+  preserves the step, action, entity, and quantity content of a procedural
+  instruction.
+keywords:
+  - machine-translation
+  - low-resource
+  - myanmar
+  - burmese
+  - instructional-text
+  - evaluation-metric
+license: Apache-2.0
+date-released: "2026-06-06"
