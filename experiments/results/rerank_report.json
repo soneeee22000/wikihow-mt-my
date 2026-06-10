@@ -1,0 +1,70 @@
+{
+  "tuning": {
+    "split": "dev",
+    "n": 908,
+    "best_alpha": 0.2,
+    "chrf_by_alpha": {
+      "0.0": 39.09,
+      "0.1": 39.09,
+      "0.2": 39.11,
+      "0.3": 39.11,
+      "0.4": 39.08,
+      "0.5": 38.98,
+      "0.6": 38.98,
+      "0.7": 38.98,
+      "0.8": 38.98,
+      "0.9": 38.98,
+      "1.0": 39.06
+    }
+  },
+  "variants_test": {
+    "split": "test",
+    "n": 846,
+    "alpha": 0.2,
+    "chrf": {
+      "beam1": 40.94,
+      "qe": 40.9,
+      "ifs": 40.88,
+      "fused": 40.92,
+      "mbr": 41.35,
+      "oracle": 46.27
+    }
+  },
+  "diagnostics_test": {
+    "split": "test",
+    "n": 846,
+    "n_best": 16,
+    "qe_picks_top_beam_pct": 4.0,
+    "oracle_picks_top_beam_pct": 6.7,
+    "headroom_in_nontop_beams_pct": 93.3,
+    "qe_oracle_agreement_pct": 9.3,
+    "random_agreement_pct": 6.2,
+    "mean_within_source_qe_spread": 0.0361,
+    "mean_qe_vs_refchrf_spearman": 0.103
+  },
+  "variants_dev": {
+    "split": "dev",
+    "n": 908,
+    "alpha": 0.2,
+    "chrf": {
+      "beam1": 39.05,
+      "qe": 39.09,
+      "ifs": 39.06,
+      "fused": 39.11,
+      "mbr": 39.6,
+      "oracle": 44.51
+    }
+  },
+  "diagnostics_dev": {
+    "split": "dev",
+    "n": 908,
+    "n_best": 16,
+    "qe_picks_top_beam_pct": 4.4,
+    "oracle_picks_top_beam_pct": 6.2,
+    "headroom_in_nontop_beams_pct": 93.8,
+    "qe_oracle_agreement_pct": 9.0,
+    "random_agreement_pct": 6.2,
+    "mean_within_source_qe_spread": 0.0374,
+    "mean_qe_vs_refchrf_spearman": 0.083
+  }
+}

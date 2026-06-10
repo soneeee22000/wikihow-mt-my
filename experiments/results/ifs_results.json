@@ -1,0 +1,58 @@
+{
+  "nllb_zeroshot": {
+    "system": "nllb_zeroshot",
+    "n": 846,
+    "ifs": 94.11,
+    "ifs_quantity": 96.99,
+    "ifs_entity": 94.32,
+    "ifs_step": 87.93,
+    "ifs_weights": {
+      "quantity": 0.4,
+      "entity": 0.4,
+      "step": 0.2
+    },
+    "ifs_action_note": "action faithfulness assessed via human protocol, not automated"
+  },
+  "nllb_finetuned": {
+    "system": "nllb_finetuned",
+    "n": 846,
+    "ifs": 95.79,
+    "ifs_quantity": 99.59,
+    "ifs_entity": 94.12,
+    "ifs_step": 91.52,
+    "ifs_weights": {
+      "quantity": 0.4,
+      "entity": 0.4,
+      "step": 0.2
+    },
+    "ifs_action_note": "action faithfulness assessed via human protocol, not automated"
+  },
+  "gtranslate": {
+    "system": "gtranslate",
+    "n": 846,
+    "ifs": 95.27,
+    "ifs_quantity": 99.59,
+    "ifs_entity": 93.71,
+    "ifs_step": 89.74,
+    "ifs_weights": {
+      "quantity": 0.4,
+      "entity": 0.4,
+      "step": 0.2
+    },
+    "ifs_action_note": "action faithfulness assessed via human protocol, not automated"
+  },
+  "gemini": {
+    "system": "gemini",
+    "n": 846,
+    "ifs": 94.33,
+    "ifs_quantity": 99.57,
+    "ifs_entity": 93.25,
+    "ifs_step": 85.99,
+    "ifs_weights": {
+      "quantity": 0.4,
+      "entity": 0.4,
+      "step": 0.2
+    },
+    "ifs_action_note": "action faithfulness assessed via human protocol, not automated"
+  }
+}

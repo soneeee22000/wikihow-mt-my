@@ -1,0 +1,20 @@
+<!-- Label Studio labeling config for IFS human validation (en->my followability).
+     Blind: shows only the English source + the Burmese translation (no system, no
+     reference). Import experiments/results/ratings_ls_import.csv as tasks. -->
+<View>
+  <Header value="Rate this Burmese translation of an English how-to instruction"/>
+  <Header value="English source (the instruction):" size="4"/>
+  <Text name="source" value="$src_en"/>
+  <Header value="Burmese translation (judge THIS):" size="4"/>
+  <Text name="translation" value="$hyp_my"/>
+
+  <View style="margin-top:1.2em">
+    <Header value="1) Instruction-Followability (1-5): could a Burmese reader correctly carry out this step from the Burmese translation ALONE? 1 = would fail / do the wrong action; 3 = mostly right, minor ambiguity; 5 = perfectly followable."/>
+    <Rating name="followability" toName="translation" maxRating="5"/>
+  </View>
+
+  <View style="margin-top:1.2em">
+    <Header value="2) Adequacy (1-5): is the meaning fully preserved vs the English? 1 = meaning lost/wrong; 5 = fully preserved."/>
+    <Rating name="adequacy" toName="translation" maxRating="5"/>
+  </View>
+</View>

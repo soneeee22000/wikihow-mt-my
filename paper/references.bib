@@ -1,0 +1,203 @@
+% References for WikiHow-MY (en->my instructional MT + IFS).
+% Seeded from the 5-area literature review (docs/literature-review.md).
+% VERIFY each entry against the ACL Anthology / arXiv before camera-ready (venues/years
+% are from the review; some are arXiv preprints that may now have a published venue).
+
+% --- Low-resource & Burmese MT, datasets, benchmarks ---------------------------
+@article{nllb2024,
+  title={Scaling neural machine translation to 200 languages},
+  author={{NLLB Team} and Costa-juss{\`a}, Marta R. and others},
+  journal={Nature}, volume={630}, year={2024},
+  note={NLLB-200; see also arXiv:2207.04672}}
+
+@misc{flores200,
+  title={The {FLORES-200} Evaluation Benchmark for Low-Resource and Multilingual Machine Translation},
+  author={{NLLB Team} and others}, year={2022}, note={arXiv:2207.04672}}
+
+@misc{floresplus2024,
+  title={{FLORES+}: Community-maintained multilingual evaluation benchmark},
+  author={{Open Language Data Initiative}}, year={2024},
+  howpublished={\url{https://github.com/openlanguagedata/flores}}}
+
+@inproceedings{alt2016,
+  title={Introducing the {Asian} Language Treebank ({ALT})},
+  author={Thu, Ye Kyaw and others}, booktitle={LREC}, year={2016}}
+
+@inproceedings{wikilingua2020,
+  title={{WikiLingua}: A New Benchmark Dataset for Cross-Lingual Abstractive Summarization},
+  author={Ladhak, Faisal and Durmus, Esin and Cardie, Claire and McKeown, Kathleen},
+  booktitle={Findings of EMNLP}, year={2020}}
+
+@misc{burmesesan2026,
+  title={{BURMESE-SAN}: A Holistic Benchmark for Burmese Language Understanding, Reasoning and Generation},
+  author={Aung, Ye Kyaw and others}, year={2026}, note={arXiv:2602.18788}}
+
+% --- MT metrics ----------------------------------------------------------------
+@inproceedings{bleu2002,
+  title={{BLEU}: a Method for Automatic Evaluation of Machine Translation},
+  author={Papineni, Kishore and Roukos, Salim and Ward, Todd and Zhu, Wei-Jing},
+  booktitle={ACL}, year={2002}}
+
+@inproceedings{chrf2015,
+  title={{chrF}: character n-gram F-score for automatic MT evaluation},
+  author={Popovi{\'c}, Maja}, booktitle={WMT}, year={2015}}
+
+@inproceedings{chrfpp2017,
+  title={{chrF++}: words helping character n-grams},
+  author={Popovi{\'c}, Maja}, booktitle={WMT}, year={2017}}
+
+@article{flores101spbleu2022,
+  title={The {FLORES-101} Evaluation Benchmark for Low-Resource and Multilingual MT},
+  author={Goyal, Naman and others}, journal={TACL}, year={2022}}
+
+@inproceedings{comet2020,
+  title={{COMET}: A Neural Framework for MT Evaluation},
+  author={Rei, Ricardo and Stewart, Craig and Farinha, Ana C. and Lavie, Alon},
+  booktitle={EMNLP}, year={2020}}
+
+@inproceedings{metricx2024,
+  title={{MetricX-24}: The {Google} Submission to the {WMT} 2024 Metrics Shared Task},
+  author={Juraska, Juraj and others}, booktitle={WMT}, year={2024}}
+
+@inproceedings{meteor2005,
+  title={{METEOR}: An Automatic Metric for MT Evaluation with Improved Correlation with Human Judgments},
+  author={Banerjee, Satanjeev and Lavie, Alon}, booktitle={ACL Workshop}, year={2005}}
+
+% --- COMET low-resource calibration -------------------------------------------
+@inproceedings{falcao2024comet,
+  title={Is {COMET} Reliable for Low-Resource Languages?},
+  author={Falc{\~a}o, J{\'u}lia and others}, booktitle={LREC-COLING}, year={2024}}
+
+@inproceedings{africomet2024,
+  title={{AfriMTE} and {AfriCOMET}: Enhancing MT Evaluation for African Languages},
+  author={Wang, Jiayi and others}, booktitle={NAACL}, year={2024}}
+
+% --- Faithfulness / critical-error / entity / quantity metrics -----------------
+@article{mqm2021,
+  title={Experts, Errors, and Context: A Large-Scale Study of Human Evaluation for MT},
+  author={Freitag, Markus and others}, journal={TACL}, year={2021}}
+
+@inproceedings{wmtced2022,
+  title={Findings of the {WMT} 2022 Shared Task on Quality Estimation (Critical Error Detection)},
+  author={Zerva, Chrysoula and others}, booktitle={WMT}, year={2022}}
+
+@inproceedings{meta2024,
+  title={Towards Cross-Cultural Machine Translation ({M-ETA} / {XC-Translate})},
+  author={Conia, Simone and others}, booktitle={EMNLP}, year={2024}}
+
+@inproceedings{aces2022,
+  title={{ACES}: Translation Accuracy Challenge Sets for Evaluating MT Metrics},
+  author={Amrhein, Chantal and Moghe, Nikita and Guillou, Liane}, booktitle={WMT}, year={2022}}
+
+@misc{recipegen2025,
+  title={{RecipeGen}: Procedural-Fidelity Metrics for Recipe Generation},
+  author={Anonymous}, year={2025}, note={arXiv:2506.06733}}
+
+% --- Instruction-following (to disambiguate) -----------------------------------
+@misc{ifeval2023,
+  title={Instruction-Following Evaluation for Large Language Models ({IFEval})},
+  author={Zhou, Jeffrey and others}, year={2023}, note={arXiv:2311.07911}}
+
+@inproceedings{xifbench2025,
+  title={{XIFBench}: Evaluating Multilingual Instruction Following},
+  author={Li, others}, booktitle={NeurIPS Datasets and Benchmarks}, year={2025}}
+
+% --- Followability construct (task-based eval, skopos) -------------------------
+@book{reissvermeer1984,
+  title={Grundlegung einer allgemeinen Translationstheorie ({Skopos} theory)},
+  author={Rei{\ss}, Katharina and Vermeer, Hans J.}, year={1984}, publisher={Niemeyer}}
+
+@incollection{gale_taskbased,
+  title={Task-Based Evaluation of Machine Translation},
+  author={Voss, Clare R. and Tate, Calandra R.}, booktitle={Handbook of Natural Language Processing and MT (GALE)}, publisher={Springer}, year={2011}}
+
+% --- Human-eval methodology / metric-vs-human ---------------------------------
+@inproceedings{graham2013da,
+  title={Continuous Measurement Scales in Human Evaluation of Machine Translation},
+  author={Graham, Yvette and Baldwin, Timothy and Moffat, Alistair and Zobel, Justin},
+  booktitle={Linguistic Annotation Workshop}, year={2013}}
+
+@inproceedings{graham2014williams,
+  title={Testing for Significance of Increased Correlation with Human Judgment},
+  author={Graham, Yvette and Baldwin, Timothy}, booktitle={EMNLP}, year={2014}}
+
+@inproceedings{mathur2020tangled,
+  title={Tangled up in {BLEU}: Reevaluating the Evaluation of Automatic MT Evaluation Metrics},
+  author={Mathur, Nitika and Baldwin, Timothy and Cohn, Trevor}, booktitle={ACL}, year={2020}}
+
+@inproceedings{kocmi2021ship,
+  title={To Ship or Not to Ship: An Extensive Evaluation of Automatic Metrics for MT},
+  author={Kocmi, Tom and others}, booktitle={WMT}, year={2021}}
+
+% --- Agentic / metric-in-the-loop MT (Track 2) --------------------------------
+@inproceedings{selfrefine2023,
+  title={Self-Refine: Iterative Refinement with Self-Feedback},
+  author={Madaan, Aman and others}, booktitle={NeurIPS}, year={2023}}
+
+@misc{ng2024transagent,
+  title={Translation Agent: Agentic translation using reflection workflow},
+  author={Ng, Andrew and others}, year={2024},
+  howpublished={\url{https://github.com/andrewyng/translation-agent}}}
+
+@inproceedings{tear2025,
+  title={{TEaR}: Improving LLM-based Machine Translation with Systematic Self-Refinement},
+  author={Feng, Zhaopeng and others}, booktitle={Findings of NAACL}, year={2025}}
+
+@inproceedings{llmrefine2024,
+  title={{LLMRefine}: Pinpointing and Refining LLMs via Fine-Grained Actionable Feedback},
+  author={Xu, Wenda and others}, booktitle={Findings of NAACL}, year={2024}}
+
+@article{maps2024,
+  title={Exploring Human-Like Translation Strategy with Large Language Models ({MAPS})},
+  author={He, Zhiwei and others}, journal={TACL}, year={2024}}
+
+@inproceedings{toral2019posteditese,
+  title = {Post-editese: an Exacerbated Translationese},
+  author = {Toral, Antonio},
+  booktitle = {Proceedings of Machine Translation Summit XVII: Research Track},
+  pages = {273--281},
+  year = {2019},
+  address = {Dublin, Ireland},
+  publisher = {European Association for Machine Translation}
+}
+
+@inproceedings{freitag2020references,
+  title = {{BLEU} might be Guilty but References are not Innocent},
+  author = {Freitag, Markus and Grangier, David and Caswell, Isaac},
+  booktitle = {Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  pages = {61--71},
+  year = {2020}
+}
+
+@inproceedings{zhang2019translationese,
+  title = {The Effect of Translationese in Machine Translation Test Sets},
+  author = {Zhang, Mike and Toral, Antonio},
+  booktitle = {Proceedings of the Fourth Conference on Machine Translation (WMT)},
+  pages = {210--220},
+  year = {2019}
+}
+
+@inproceedings{rei2022cometkiwi,
+  title = {{CometKiwi}: {IST}-Unbabel 2022 Submission for the Quality Estimation Shared Task},
+  author = {Rei, Ricardo and Treviso, Marcos and Guerreiro, Nuno M. and Zerva, Chrysoula and Farinha, Ana C. and Maroti, Christine and C. de Souza, Jos{\'e} G. and Glushkova, Taisiya and Alves, Duarte and Coheur, Luisa and Lavie, Alon and Martins, Andr{\'e} F. T.},
+  booktitle = {Proceedings of the Seventh Conference on Machine Translation (WMT)},
+  pages = {634--645},
+  year = {2022}
+}
+
+@inproceedings{eikema2020mbr,
+  title = {Is {MAP} Decoding All You Need? The Inadequacy of the Mode in Neural Machine Translation},
+  author = {Eikema, Bryan and Aziz, Wilker},
+  booktitle = {Proceedings of the 28th International Conference on Computational Linguistics (COLING)},
+  pages = {4506--4520},
+  year = {2020}
+}
+
+@inproceedings{freitag2022mbr,
+  title = {High Quality Rather than High Model Probability: Minimum {Bayes} Risk Decoding with Neural Metrics},
+  author = {Freitag, Markus and Grangier, David and Tan, Qijun and Liang, Bowen},
+  journal = {Transactions of the Association for Computational Linguistics (TACL)},
+  volume = {10},
+  pages = {811--825},
+  year = {2022}
+}
