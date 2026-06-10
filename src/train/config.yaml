@@ -14,9 +14,9 @@ train:
   learning_rate: 3.0e-5
   warmup_ratio: 0.05
   num_train_epochs: 10 # early-stop on dev chrF; do NOT blindly run all 10
-  per_device_train_batch_size: 8
-  per_device_eval_batch_size: 8
-  gradient_accumulation_steps: 4 # effective 32; drop to 16 on T4
+  per_device_train_batch_size: 4 # 16GB P100/T4: batch 8 OOMs NLLB-600M
+  per_device_eval_batch_size: 2 # beam-5 generation is memory-heavy; keep small
+  gradient_accumulation_steps: 8 # effective 32 (unchanged)
   fp16: true
   eval_strategy: steps
   eval_steps: 250

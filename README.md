@@ -80,19 +80,51 @@ bit-for-bit with `seed=42`.
 
 ## Results (test set, n=846)
 
-English→Myanmar. chrF++ is the primary metric.
+English→Myanmar. chrF++ is the primary metric (segmentation-agnostic for
+unsegmented Burmese); MetricX-24 is an error score where **lower is better**.
 
-| System                               |        chrF++ | spBLEU | BLEU | COMET |
-| ------------------------------------ | ------------: | -----: | ---: | ----: |
-| NLLB-200-distilled-600M (zero-shot)  |     **36.01** |  19.33 | 2.62 |     — |
-| NLLB-200-distilled-600M (fine-tuned) | _in progress_ |        |      |       |
-| Gemini 2.5 (few-shot)                |     _planned_ |        |      |       |
-| Google Translate                     |     _planned_ |        |      |       |
+| System                               |    chrF++ |    spBLEU |     BLEU |     COMET | MetricX-24 ↓ |   IFS |
+| ------------------------------------ | --------: | --------: | -------: | --------: | -----------: | ----: |
+| NLLB-200-distilled-600M (zero-shot)  |     36.01 |     19.33 |     2.62 |     0.858 |         4.09 | 94.11 |
+| NLLB-200-distilled-600M (fine-tuned) |     41.64 |     23.18 |     3.74 |     0.886 |         3.23 | 95.79 |
+| Gemini 2.5 Flash (5-shot)            |     42.59 |     24.77 |     3.47 | **0.904** |     **2.39** | 94.33 |
+| Google Translate                     | **43.60** | **27.65** | **5.07** |     0.894 |         2.71 | 95.27 |
 
-The zero-shot number is on-anchor with published NLLB FLORES Burmese results,
-which validates the harness. Tables are generated from
-`experiments/results/main_results.json` by `src/eval/make_tables.py` — numbers
-are never hand-typed into the paper.
+**Key finding — metrics disagree on the winner.** Surface metrics
+(chrF++/spBLEU/BLEU) rank Google Translate first, while **both** learned metrics
+(COMET and MetricX-24) rank Gemini first. This surface-vs-semantic split
+reproduces on independent FLORES+ references, so it is a property of the metrics,
+not an artifact of our post-edited corpus. Fine-tuning NLLB improves **every**
+metric (+5.6 chrF++ in-domain) and also lifts out-of-domain FLORES+ (+4.3 chrF++)
+— domain adaptation with no catastrophic forgetting.
+
+**Decoding-time reranking probe (negative result).** A reference-optimal pick
+from the fine-tuned model's 16-best beats Google Translate (oracle 46.27 > 43.60
+chrF++), but no reference-free selector — COMET-Kiwi QE, structural IFS, fused, or
+MBR — recovers it (best +0.4). COMET-Kiwi's per-source ranking correlates only
+ρ=0.10 with reference chrF++: learned-QE miscalibration for Burmese, made concrete
+at decoding time. Details in [`docs/rerank-booster.md`](docs/rerank-booster.md).
+
+Tables are generated from `experiments/results/*.json` by
+`src/eval/make_tables.py` — numbers are never hand-typed into the paper.
+
+## Pretrained model
+
+The fine-tuned model is published on the Hugging Face Hub:
+**[`PyaeSoneK/nllb-600m-wikihow-en-my`](https://huggingface.co/PyaeSoneK/nllb-600m-wikihow-en-my)**
+(CC-BY-NC-4.0, inherited from NLLB-200).
+
+```python
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+
+mid = "PyaeSoneK/nllb-600m-wikihow-en-my"
+tok = AutoTokenizer.from_pretrained(mid, src_lang="eng_Latn")
+model = AutoModelForSeq2SeqLM.from_pretrained(mid)
+enc = tok("Fold the paper in half, then crease the edge firmly.", return_tensors="pt")
+out = model.generate(**enc, forced_bos_token_id=tok.convert_tokens_to_ids("mya_Mymr"),
+                     num_beams=5, max_new_tokens=256)
+print(tok.batch_decode(out, skip_special_tokens=True)[0])
+```
 
 ## Project structure
 
@@ -104,13 +136,15 @@ wikihow-mt-my/
 │   └── sample/      # 20-row committed teaser
 ├── src/
 │   ├── data/        # build_splits.py, normalize.py, stats.py
-│   ├── infer/       # translate.py  (batched NLLB inference)
+│   ├── infer/       # translate.py, translate_nbest.py, llm_baselines.py
 │   ├── train/       # finetune_nllb.py + config.yaml
-│   └── eval/        # automatic.py (chrF++/spBLEU/BLEU/COMET), make_tables.py
+│   ├── rerank/      # rerank.py, score_qe.py  (IFS+QE decoding-time booster)
+│   └── eval/        # automatic.py, ifs.py, correlate.py, make_tables.py
+├── scripts/         # Kaggle GPU orchestrators, COMET/MetricX, push_to_hub.py
 ├── notebooks/       # colab_finetune_nllb.ipynb  (GPU training)
 ├── experiments/     # LOG.md (append-only) + results/
-├── paper/           # figures/ + tables/
-└── docs/            # execution-plan.md, data-audit.md
+├── paper/           # main.tex, references.bib, MODEL_CARD.md, tables/, figures/
+└── docs/            # execution-plan.md, data-audit.md, rerank-booster.md, ...
 ```
 
 ## Getting started
@@ -148,11 +182,14 @@ processed parallel files are gitignored. A 20-row sample lives in
 
 ## Status
 
-Work in progress, targeting the **WMT 2026** research track. Done: corpus
+Work in progress, targeting the **WMT 2026** research track. **Done:** corpus
 cleaning, article-disjoint splits, dataset statistics, the evaluation harness,
-and the NLLB zero-shot baseline. Next: NLLB fine-tuning + COMET, the
-Gemini/Google Translate baselines, and the IFS metric with human validation.
-Methodology and the running plan are in [`docs/execution-plan.md`](docs/execution-plan.md).
+the full benchmark (NLLB zero-shot + fine-tuned, Gemini 2.5 Flash, Google
+Translate) on chrF++/spBLEU/BLEU/COMET/MetricX-24, the FLORES+ out-of-domain
+bias control, the automatic IFS components, the decoding-time reranking probe,
+and the published fine-tuned model. **Next:** the IFS human-followability study
+(the keystone validation). Methodology and the running plan are in
+[`docs/execution-plan.md`](docs/execution-plan.md).
 
 ## License & author
 

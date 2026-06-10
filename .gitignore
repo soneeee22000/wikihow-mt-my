@@ -5,6 +5,8 @@
 data/raw/
 data/processed/*.jsonl
 # A 20-row teaser (data/sample/) and the aggregate stats JSONs ARE committed.
+# Human-rating sheets embed English source text -> keep local (rehydration policy).
+experiments/results/ratings*.csv
 
 # --- Models / checkpoints / runs -------------------------------------------
 ckpt/
@@ -41,3 +43,23 @@ _archive/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# --- LaTeX build artifacts (rebuildable from main.tex + references.bib) -----
+paper/*.aux
+paper/*.log
+paper/*.bbl
+paper/*.blg
+paper/*.out
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.synctex.gz
+paper/main.pdf
+
+# MetricX input JSONLs contain English source text -> keep off GitHub (rehydration policy)
+experiments/results/metricx_inputs/
+
+# Kaggle kernel logs (may echo source text; not research artifacts)
+experiments/results/*.log
+
+# reranking intermediates (large; Burmese candidates + QE scores, no English source)
+experiments/results/nbest/

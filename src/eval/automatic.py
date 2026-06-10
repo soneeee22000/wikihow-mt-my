@@ -21,6 +21,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 RESULTS = os.path.join(ROOT, "experiments", "results")
 
 
+DEFAULT_COMET = "Unbabel/wmt22-comet-da"
+
+
 def read_refs(path: str, field: str = "my") -> list:
     refs = []
     with open(path, encoding="utf-8") as f:
@@ -46,7 +49,34 @@ def _spbleu(hyps, refs):
     return None, None, None
 
 
-def score(hyps: list, refs: list, system: str) -> dict:
+def _comet(srcs, hyps, refs, model_name):
+    """Reference-based COMET (e.g. wmt22-comet-da). Needs source, hyp, ref.
+
+    Returns (system_score, model_name) or (None, note) on failure so the caller
+    can record why it was skipped instead of crashing the whole eval.
+    """
+    if srcs is None:
+        return None, "comet skipped: no source (pass --refs jsonl with an 'en' field)"
+    try:
+        from comet import download_model, load_from_checkpoint
+    except Exception:
+        return None, "comet not installed; pip install unbabel-comet"
+    try:
+        ckpt = download_model(model_name)
+        model = load_from_checkpoint(ckpt)
+        data = [{"src": s, "mt": h, "ref": r}
+                for s, h, r in zip(srcs, hyps, refs)]
+        import torch
+        gpus = 1 if torch.cuda.is_available() else 0
+        out = model.predict(data, batch_size=16, gpus=gpus)
+        return round(float(out["system_score"]), 4), model_name
+    except Exception as exc:  # surface the reason, don't kill chrF/BLEU
+        return None, f"comet error: {type(exc).__name__}: {exc}"
+
+
+def score(hyps: list, refs: list, system: str,
+          srcs: list = None, run_comet: bool = False,
+          comet_model: str = DEFAULT_COMET) -> dict:
     assert len(hyps) == len(refs), f"{len(hyps)} hyps vs {len(refs)} refs"
     chrf = sacrebleu.CHRF(word_order=2)  # chrF++
     chrf_s = chrf.corpus_score(hyps, [refs])
@@ -66,14 +96,14 @@ def score(hyps: list, refs: list, system: str) -> dict:
         "spbleu_signature": sp_sig,
     }
 
-    try:  # COMET is optional / heavy
-        from comet import download_model, load_from_checkpoint  # noqa
-        # left as a hook; run on GPU/Colab where the checkpoint is cached
+    if run_comet:
+        comet_score, note = _comet(srcs, hyps, refs, comet_model)
+        out["comet"] = comet_score
+        out["comet_model"] = comet_model if comet_score is not None else None
+        out["comet_note"] = note if comet_score is None else "ok"
+    else:
         out["comet"] = None
-        out["comet_note"] = "comet installed but not run here; compute on GPU"
-    except Exception:
-        out["comet"] = None
-        out["comet_note"] = "comet not installed; compute on Colab/GPU"
+        out["comet_note"] = "comet not run; pass --comet (run on GPU/Colab)"
     return out
 
 
@@ -82,16 +112,23 @@ def main():
     ap.add_argument("--hyps", required=True)
     ap.add_argument("--refs", required=True)
     ap.add_argument("--field", default="my")
+    ap.add_argument("--src-field", default="en", help="source field for COMET")
     ap.add_argument("--system", required=True)
     ap.add_argument("--limit", type=int, default=0, help="0 = all; else first N refs")
+    ap.add_argument("--comet", action="store_true", help="compute COMET (needs GPU)")
+    ap.add_argument("--comet-model", default=DEFAULT_COMET)
     ap.add_argument("--out", default=os.path.join(RESULTS, "main_results.json"))
     args = ap.parse_args()
 
     hyps = read_lines(args.hyps)
     refs = read_refs(args.refs, args.field)
+    srcs = read_refs(args.refs, args.src_field) if args.comet else None
     if args.limit:
         refs = refs[: args.limit]
-    res = score(hyps, refs, args.system)
+        if srcs is not None:
+            srcs = srcs[: args.limit]
+    res = score(hyps, refs, args.system, srcs=srcs,
+                run_comet=args.comet, comet_model=args.comet_model)
     print(json.dumps(res, ensure_ascii=False, indent=2))
 
     os.makedirs(os.path.dirname(args.out), exist_ok=True)

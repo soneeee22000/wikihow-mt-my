@@ -1,0 +1,266 @@
+% WikiHow-MY: instructional English->Myanmar MT corpus + IFS metric.
+% DRAFT. Portable article class so it compiles now (pdflatex main; bibtex main; pdflatex x2).
+% FOR SUBMISSION: replace the preamble with the official ACL template
+%   (\documentclass[11pt]{article}\usepackage[review]{acl}) from
+%   https://github.com/acl-org/acl-style-files , keep the body, switch bib style to acl_natbib.
+% Numbers are traceable to experiments/results/main_results.json via \input{tables/*}.
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage[round]{natbib}
+\usepackage{hyperref}
+
+\title{WikiHow-MY: A Human Post-Edited English--Myanmar Instructional MT Corpus
+and an Instruction-Faithfulness Score for Procedural Translation}
+\author{Anonymous (WMT 2026 submission)}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We present \textbf{WikiHow-MY}, to our knowledge the first instructional/how-to
+English--Myanmar parallel corpus: $\sim$10k human post-edited (MTPE), quality-checked
+sentence pairs from WikiHow, released by rehydration under CC BY-NC-SA 3.0 with
+article-disjoint splits. On this resource we benchmark NLLB-200 (zero-shot and
+fine-tuned), Google Translate, and Gemini 2.5 with chrF++/spBLEU/BLEU/COMET, and find
+that \emph{surface and semantic metrics disagree on the best system}. We then introduce
+the \textbf{Instruction Faithfulness Score (IFS)}, an interpretable, source-anchored
+metric that decomposes procedural fidelity into step, action, entity, and quantity
+preservation, and validate it against human \emph{instruction-followability} ratings---
+the first such validation for a low-resource language, where learned metrics such as
+COMET are known to be poorly calibrated.
+% TODO: add final IFS-vs-human correlation numbers once the human study completes.
+Finally, we probe whether decoding-time reranking can close the in-domain gap to the
+commercial system, and report a negative result: although a reference-optimal selection
+from the fine-tuned model's $n$-best \emph{beats} Google Translate, no reference-free
+signal---learned quality estimation, structural IFS, or MBR---recovers this gain, a
+concrete decoding-time symptom of learned-metric miscalibration for Burmese.
+\end{abstract}
+
+\section{Introduction}
+% TODO: tighten after results are in.
+Procedural, instructional text---how-to guides, recipes, manuals---is high-stakes to
+translate: a reordered step, a dropped negation, or an altered quantity can make the
+instructions \emph{unfollowable}, a failure mode standard MT evaluation does not isolate.
+This problem is acute for low-resource languages such as Burmese (Myanmar), where parallel
+data is scarce and existing resources are news-domain (ALT, \citealp{alt2016}) or
+web-crawled (NLLB, \citealp{nllb2024}); the WikiHow-derived multilingual resource
+WikiLingua \citep{wikilingua2020} does not include Burmese.
+
+We make three contributions:
+(1) \textbf{WikiHow-MY}, the first instructional English--Myanmar MTPE corpus
+(\S\ref{sec:corpus});
+(2) a \textbf{benchmark} of open, commercial, and LLM systems showing that surface
+(chrF++/spBLEU) and semantic (COMET) metrics rank the systems differently (\S\ref{sec:bench});
+(3) the \textbf{Instruction Faithfulness Score (IFS)}, a procedural-fidelity metric for MT,
+validated against human followability in a setting where COMET is miscalibrated
+\citep{falcao2024comet,africomet2024} (\S\ref{sec:ifs}).
+We additionally probe decoding-time reranking and report a negative result: the gain
+needed to match the commercial system is present in the fine-tuned model's $n$-best but
+unreachable by any reference-free selector (\S\ref{sec:rerank}).
+
+\paragraph{Scope clarification.} ``Instruction-followability'' here is a property of a
+\emph{translation} (can a reader execute the procedure from the target text?), distinct
+from ``instruction-following'' in the LLM sense of a model obeying a prompt
+\citep{ifeval2023,xifbench2025}. We operationalize it as task-based MT evaluation
+\citep{gale_taskbased} in the functionalist/skopos tradition \citep{reissvermeer1984}.
+
+\section{Related Work}
+\paragraph{Low-resource and Burmese MT.} NLLB-200 \citep{nllb2024} is the standard open
+baseline, evaluated on FLORES-200/+ \citep{flores200,floresplus2024}; ALT \citep{alt2016}
+is the de-facto en--my (news) set; BURMESE-SAN \citep{burmesesan2026} is the most recent
+Burmese LLM benchmark and scores MT with MetricX-24 \citep{metricx2024} on FLORES+.
+Burmese is written without word boundaries and historically split between Zawgyi and
+Unicode encodings, motivating character-level metrics (chrF++, \citealp{chrfpp2017}) and
+SentencePiece-based spBLEU \citep{flores101spbleu2022} over tokenizer-dependent BLEU
+\citep{bleu2002}.
+
+\paragraph{MT metrics and faithfulness.} Beyond surface metrics, learned metrics
+COMET \citep{comet2020} and MetricX-24 \citep{metricx2024} lead segment-level correlation
+but are documented to be unreliable for low-resource languages
+\citep{falcao2024comet,africomet2024}. Entity- and number-preservation are established
+evaluation targets---WMT Critical Error Detection NUM/NAM \citep{wmtced2022}, manual entity
+accuracy M-ETA \citep{meta2024}, and challenge sets ACES \citep{aces2022}---so IFS
+\emph{adopts} (and cites), rather than claims, those two components. Procedural-correctness
+metrics (action precision, step edit-distance, ingredient/quantity preservation) appear in
+recipe \emph{generation} \citep{recipegen2025}; we are, to our knowledge, the first to bring
+step-ordering and imperative-action preservation into \emph{translation} evaluation, and the
+first to validate against human followability. METEOR \citep{meteor2005} rewards
+intra-sentence word order; IFS instead measures procedural \emph{step} order.
+
+\paragraph{Procedural text and followability.} WikiHow encodes ordered, goal-directed steps
+\citep{wikilingua2020}; functionalist translation theory \citep{reissvermeer1984} treats
+instructions as ``operative'' texts judged by whether they elicit correct reader action,
+and task-based MT evaluation \citep{gale_taskbased} measures whether a user can complete a
+task from MT output. We synthesize these into a followability construct for procedural MT,
+with error severity grounded in MQM \citep{mqm2021}.
+
+\paragraph{Agentic MT (future work).} Reflection/refinement MT \citep{selfrefine2023,
+ng2024transagent,tear2025,llmrefine2024} and metric-guided selection \citep{maps2024} use
+generic quality signals (MQM/COMET); using a structured procedural-fidelity score as an
+in-loop control signal is unexplored and is the subject of follow-on work (\S\ref{sec:concl}).
+
+\section{The WikiHow-MY Corpus}\label{sec:corpus}
+WikiHow-MY contains \textbf{10{,}056} English--Myanmar sentence pairs from \textbf{82}
+WikiHow articles. Translations are \textbf{machine-translation post-edited (MTPE) and
+quality-checked} by Myanmar native speakers---we do not claim gold-standard human
+translation. English sentences average 14.3 tokens (median 13, p95 28); Myanmar sentences
+average 93 characters (median 85). Myanmar text is normalized to Unicode (no Zawgyi rows
+detected) following the encoding considerations above.
+
+\paragraph{Splits.} We split \textbf{by article} (GroupShuffleSplit, seed 42) into
+train/dev/test of \textbf{8{,}302 / 908 / 846} pairs with \textbf{zero article overlap},
+avoiding the sentence-level leakage that would inflate a benchmark. Figure~\ref{fig:stats}
+summarizes the distributions.
+
+\paragraph{Provenance and reference bias.} The corpus combines a professionally post-edited
+subset and a volunteer post-edited subset; the specific base MT engine used to seed
+post-editing was not recorded by the original creators. Because post-edited references are an
+exacerbated translationese that can favor the seeding system and inflate surface metrics
+\citep{toral2019posteditese,freitag2020references,zhang2019translationese}, we explicitly test
+for this bias rather than assume it away (\S\ref{sec:bench}): a segment-level analysis finds
+no copy signature toward any benchmarked system, and an out-of-domain FLORES+ control shows
+the residual reference effect, if anything, favors our \emph{fine-tuned} model (which learns
+this corpus's post-edit style) rather than the commercial systems. We additionally report
+learned, reference-light metrics (COMET, MetricX-24) that are less sensitive to reference
+surface form.
+
+\paragraph{Release.} To respect WikiHow's CC BY-NC-SA 3.0 license (pre-2025 content), we
+release by \emph{rehydration}---Myanmar translations, source URLs/IDs, and a build script---
+never mirroring the English source; the released data carries CC BY-NC-SA 3.0 with attribution.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/dataset_stats.png}
+\caption{WikiHow-MY corpus statistics (lengths, per-article distribution).}
+\label{fig:stats}
+\end{figure}
+
+\section{Benchmark}\label{sec:bench}
+We evaluate, English$\rightarrow$Myanmar, on the article-disjoint test set ($n{=}846$):
+NLLB-200-distilled-600M zero-shot and fine-tuned (LR $3{\times}10^{-5}$, early-stopping on
+dev chrF, seed 42), Google Translate (web), and Gemini 2.5 Flash (5-shot). We report chrF++
+(primary; segmentation-agnostic for unsegmented Myanmar), spBLEU (FLORES-200 tokenizer),
+tokenized BLEU, COMET (\texttt{wmt22-comet-da}), and MetricX-24
+(\texttt{hybrid-xl-v2p6}, reference-based; an error score in $[0,25]$, lower is better)
+\citep{metricx2024}---the learned metric used by BURMESE-SAN, included here for direct
+comparability. All numbers are generated from JSON, not hand-typed.
+
+\input{tables/main_results.tex}
+
+\paragraph{Findings.} Fine-tuning improves substantially over zero-shot on every metric
+(+5.6 chrF++; COMET $0.858\rightarrow0.886$; MetricX-24 $4.09\rightarrow3.23$).
+However, \emph{surface and learned metrics disagree on the best system}: Google Translate
+leads on all surface metrics (chrF++/spBLEU/BLEU), whereas \emph{both} learned metrics rank
+Gemini~2.5 Flash first (COMET $0.904$; MetricX-24 $2.39$ vs.\ Google Translate's $2.71$).
+That two independently trained learned metrics agree---and agree with BURMESE-SAN
+\citep{burmesesan2026}, where Gemini-class models top MetricX---indicates the split is
+genuinely surface-vs-semantic rather than a single-metric artifact. Yet learned metrics carry
+their own documented low-resource miscalibration \citep{falcao2024comet,africomet2024} and are
+opaque about \emph{what} they reward; this motivates an interpretable, procedure-aware metric.
+
+\paragraph{Is the benchmark biased by post-edited references?} Because our references are
+post-edited, a natural concern is that surface metrics favor whichever engine seeded the
+post-editing (plausibly a commercial system). We test this two ways. First, a segment-level
+copy analysis: if references were post-edited from system $X$, $X$'s raw output would
+reproduce many references near-verbatim. It does not---exact-match rates against the reference
+are uniformly near-zero (Google Translate $0.24\%$, Gemini $0.24\%$, fine-tuned NLLB
+$0.47\%$), with Google Translate \emph{not} the leader and the few matches being trivially
+short segments. Second, a domain-controlled comparison on FLORES+ (Table~\ref{tab:flores}),
+whose references are independent professional translations, never post-edited from our systems.
+Crucially, Google Translate's lead over fine-tuned NLLB \emph{widens} from $+2.0$ chrF++
+in-domain to $+8.8$ on FLORES+. A reference bias favoring Google Translate would predict the
+opposite (a larger in-domain gap); the actual pattern shows that the residual reference effect
+favors our \emph{fine-tuned} model in-domain---it has learned this corpus's post-edit style---
+so our WikiHow numbers are, if anything, generous to the open model rather than to the
+commercial baseline. Finally, the surface-vs.-learned metric disagreement we observe
+in-domain (surface metrics rank Google Translate first, while COMET and MetricX-24 rank
+Gemini first) reproduces on the independent FLORES+ references---where Gemini again leads on
+both learned metrics (MetricX-24 $3.08$ vs.\ $3.31$)---confirming it is a property of the
+metrics, not an artifact of our post-edited references.
+
+\paragraph{Domain generalization (FLORES+).} The same FLORES+ evaluation doubles as a
+generalization check. Fine-tuning improves \emph{both} domains and \emph{all} three metrics
+---in-domain $+5.6$ chrF++ / MetricX-24 $4.09\rightarrow3.23$, and out-of-domain $+4.3$ chrF++
+/ MetricX-24 $5.64\rightarrow4.80$---so adapting to WikiHow yields no catastrophic forgetting
+on general-domain text. As expected, absolute scores are weaker on FLORES+ (broad-domain,
+longer sentences); the large out-of-domain gap to Google Translate also shows that our gains
+are domain-specific, motivating in-domain enhancement rather than claims of general parity.
+
+\input{tables/flores_domain.tex}
+
+\section{Instruction Faithfulness Score}\label{sec:ifs}
+IFS is a source-anchored metric over (English source, Myanmar hypothesis) that decomposes
+procedural fidelity into four components: \textbf{step} (step/clause-unit preservation),
+\textbf{action} (imperative-verb preservation), \textbf{entity} (named/copyable-entity
+preservation; cf.\ \citealp{meta2024,wmtced2022}), and \textbf{quantity} (numeral
+preservation, Arabic and Myanmar digits; cf.\ \citealp{wmtced2022}). Entity and quantity are
+\emph{adopted} signals; the step and action components, and their use as an MT metric, are
+novel to our knowledge (procedural-correctness metrics otherwise appear in generation,
+\citealp{recipegen2025}). The automatic components form a proxy; the action component is
+assessed in the human study.
+\input{tables/ifs_components.tex}
+
+\section{Human Validation}\label{sec:human}
+% TODO: results pending the Label Studio rating study.
+We validate IFS against human \emph{instruction-followability} ratings. Native-Burmese raters
+score a blind, randomized sample (40 source sentences $\times$ 4 systems $=160$ items) for
+followability and adequacy (1--5); a $\geq$50-item overlap subset is double-rated for
+ordinal Krippendorff's $\alpha$, with intra-rater test--retest and seeded quality-control
+items. We report \emph{segment-level} Spearman (primary) and Pearson correlations with
+95\% bootstrap CIs, and the Williams test \citep{graham2014williams} comparing IFS against
+COMET/chrF; we avoid system-level claims given small $n$ \citep{mathur2020tangled}, following
+\citet{kocmi2021ship}. \textbf{[Results to be inserted.]}
+
+\section{Can Decoding-Time Reranking Close the Gap?}\label{sec:rerank}
+Google Translate's in-domain surface lead ($+2.0$ chrF++ over fine-tuned NLLB) invites a
+training-free question: does the fine-tuned model already \emph{produce} better translations
+that greedy decoding discards? We generate a 16-best list (beam search) per test source and
+rerank it with reference-free selectors---a learned quality estimator (QE; COMET-Kiwi
+\citep{rei2022cometkiwi}), our structural IFS, their min--max-normalised fusion (weight
+$\alpha$ tuned on dev), and Minimum Bayes Risk over chrF++
+\citep{eikema2020mbr,freitag2022mbr}---and compare against an oracle that selects the
+candidate with the highest chrF++ against the reference (an unreachable ceiling, not a system).
+
+\input{tables/rerank.tex}
+
+Table~\ref{tab:rerank} reports a sharp negative result. The oracle reaches $46.27$ chrF++,
+\emph{exceeding Google Translate} ($43.60$): a reference-optimal selection from the open
+model's own beam beats the commercial baseline for the large majority of sources, and
+$93.3\%$ of that headroom sits in non-top beams. Yet \emph{no reference-free selector
+recovers it}---QE, IFS, and fusion all land within $0.06$ chrF++ of the top beam, and MBR adds
+only $+0.41$. The diagnosis is that the selection signal, not the candidate set, is the
+bottleneck: COMET-Kiwi's per-source ranking of the 16 candidates correlates only
+$\rho{=}0.10$ with their reference chrF++ and agrees with the oracle's choice $9.3\%$ of the
+time (chance $6.2\%$). Structural IFS is near-constant across the beam---the candidates are
+paraphrases that preserve the same entities, quantities, and steps---so it cannot discriminate
+either.\footnote{The 16-best top beam ($40.94$) scores marginally below the greedy fine-tuned
+baseline of Table~\ref{tab:main} ($41.64$); the comparison here is internal to the beam.}
+This makes concrete, at decoding time, the low-resource learned-metric miscalibration noted in
+\S\ref{sec:bench}: the gain is reachable in principle but invisible to reference-free quality
+signals available for Myanmar. Closing it---e.g.\ with a structural procedural-fidelity signal
+used as an in-loop reward rather than a post-hoc reranker---is the direction we pursue in
+follow-on work, for which IFS is designed.
+
+\section{Limitations}
+The corpus is $\sim$10k pairs, a single direction (en$\rightarrow$my), and MTPE (not
+gold human translation). Automatic IFS rewards literal surface preservation and can exceed
+a fluent human reference on it, so it is not a standalone quality signal absent the human
+followability validation. The human study uses a small expert panel. The NC license limits
+downstream commercial use. The Gemini baseline is Flash (cost), weaker than Pro.
+
+\section{Conclusion}\label{sec:concl}
+% TODO: finalize after results.
+We release the first instructional en--my MTPE corpus, benchmark four systems (finding that
+metrics disagree), and propose IFS, a procedure-aware followability metric. Follow-on work
+uses IFS as an in-loop control signal in an agentic translate--reflect--repair system for
+low-resource procedural translation.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+\end{document}
