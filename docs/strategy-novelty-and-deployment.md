@@ -157,3 +157,70 @@ later as courtesy. (User decision 2026-06-07.)
   / FLORES+ cross-eval; write-up.
 - Track-2 flagship design: IFS-as-reward agent loop (base = fine-tuned NLLB; LLM reflect/repair; IFS
   gates refinement + termination). Differentiate from TEaR / LLMRefine / Ng / MAPS.
+
+## 10. Flagship sharpened — v2 (2026-06-12, post-WMT-negative-result)
+
+**The locked v1 thesis ("IFS-as-reward") is half-dead and we should say so.** Our own WMT reranking
+experiment proved structural IFS is **near-flat across the fine-tuned model's 16-best** (paraphrases
+that preserve the same steps/entities/quantities); COMET-Kiwi's per-source ranking correlates only
+**ρ=0.10** with reference chrF++; scalar reranking recovered **+0.41** of a **+5.3** oracle headroom.
+A reviewer who read our WMT paper would kill "IFS-as-scalar-reward" in one line.
+
+**The pivot:** IFS is a poor _ranker_ of similar candidates but an excellent _structured error
+LOCALIZER_ (which step dropped, which quantity changed, which entity vanished). So the flagship is
+**IFS-as-structured-error-localizer → selective, constraint-targeted repair**, and the WMT negative
+result becomes the flagship's _motivating experiment_: the field's standard move (scalar quality
+signal — COMET-reward RL, QE reranking, MBR) _provably_ cannot recover the headroom for low-resource
+Burmese; that failure is _why_ structured localizing repair is needed.
+
+**Thesis spine (chosen 2026-06-12, layered):** PhD thesis + SOP narrative = **"Executable
+Translation"** (procedural/executable MT as a problem class — followability, not BLEU; generalizes to
+medical/legal/safety MT); the single ACL/EMNLP 2027 paper = **"When Metrics Fail"** (when the quality
+metric is unreliable — the default for low-resource — stop optimizing a scalar reward; decompose
+faithfulness into checkable structured constraints, localize the break, repair it selectively).
+
+**Why structured beats free-text critique for low-resource specifically (the intellectual core):** a
+free-text LLM critic is _itself_ miscalibrated on Burmese fluency (same low-resource failure that
+breaks COMET); structured constraints (this numeral, this entity, this imperative, this step) are
+**language-agnostic, checkable surface anchors** — verifying them is cross-lingual _matching_, not
+Burmese _understanding_.
+
+**Selective repair = method novelty AND deployment necessity:** NLLB runs on-device offline in
+low-connectivity Myanmar; the LLM fires _only_ on IFS-flagged segments (~k%) → cheap, degrades
+gracefully. Answers the "why not just use the LLM?" reviewer directly.
+
+**The decisive experiment + cut-lines:** C0 base / C1 free-text-critique repair / C2 IFS-localized
+repair / C3 full-LLM, scored on **human followability**. Holds iff **C2 > C1 ≥ C0 at a fraction of
+C3's cost**. If C1≈C2 → structure didn't matter (cost-efficiency paper); if C3 dominates cheaply →
+"just use the LLM" finding (pivot to on-device angle). Full design: `docs/flagship-rq4-protocol.md`.
+
+**Gating dependency:** flagship is gated on RQ3 (IFS validating against human followability in the
+WMT study). The human study is the flagship's _foundation_, not just WMT's keystone. **Not built yet
+(user decision 2026-06-12): documented + instrument made forward-compatible; do not implement the
+agent until RQ3 confirms.** moat-check intentionally skipped — this is a research thesis, not a
+venture (deployment = impact + eval-data by design; see §3).
+
+## 11. Venue decision — flagship + companion (2026-06-12, research-backed)
+
+Two web-research agents surveyed ACL/ARR 2027 timelines + where the sibling papers actually land.
+Key facts: it's an **ARR world** (ACL/EMNLP/NAACL/EACL all commit from ACL Rolling Review, so the
+letterhead is largely interchangeable — cycle + audience matter more than name). Closest published
+precedents are **NOT at ACL**: MAPS/xCOMET/TransAgents → **TACL**; AfriCOMET (low-resource metric +
+human validation) + TEaR (translate→estimate→refine) → **NAACL main**.
+
+- **Flagship target = TACL (primary), NAACL 2027 main (fallback).** (User chose, over ACL/EMNLP.)
+  Rationale: TACL is **rolling** (submit the month the human study + C2>C1 result lands — matches the
+  flagship's RQ3-gated, uncertain ready-date; no deadline cliff), is the **exact home of the sibling
+  agentic-MT + metric papers**, gives unbounded space for the full human protocol, and is = ACL/EMNLP
+  main prestige to PhD committees. NAACL 2027 main (ARR **~Oct 2026** cycle → commit ~Jan 2027;
+  Pittsburgh, May 2027) is the precedent-perfect conference fallback if a stage/faster visibility is
+  wanted — but that deadline is TIGHT given RQ3 isn't run. ACL 2027 (the old plan) is the
+  latest-timing option (ARR ~Feb 2027, Japan Jul 2027) and **no better a fit** — don't anchor on the
+  famous name. **Do NOT put the flagship at WMT** (underselling; WMT = the floor paper).
+- **Companion = WikiHow-MY corpus → WAT @ EMNLP** (Workshop on Asian Translation; Burmese–English is a
+  recurring WAT pair). 4–8pp resource paper carved from the WMT-floor material (mostly written) →
+  Burmese/Asian-MT community visibility + a citeable resource that strengthens the flagship's claims.
+- Avoid for the core paper: WMT Metrics shared task (system-descriptions only), LREC-COLING
+  (too low-prestige given AfriCOMET landed NAACL main), workshop-only for the methodology.
+- ARR mechanics: ~10-week cycles, 2026 cycles Mar 16 / May 25 / Aug 3 / Oct 12; submit→reviews
+  (~10wk)→commit to a venue→PC decision (~4–6wk). EMNLP 2026 (ARR May 25) already past.
