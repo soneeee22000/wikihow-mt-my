@@ -1,22 +1,31 @@
 % WikiHow-MY: instructional English->Myanmar MT corpus + IFS metric.
-% DRAFT. Portable article class so it compiles now (pdflatex main; bibtex main; pdflatex x2).
-% FOR SUBMISSION: replace the preamble with the official ACL template
-%   (\documentclass[11pt]{article}\usepackage[review]{acl}) from
-%   https://github.com/acl-org/acl-style-files , keep the body, switch bib style to acl_natbib.
-% Numbers are traceable to experiments/results/main_results.json via \input{tables/*}.
+% Official ACL style (acl.sty + acl_natbib.bst from github.com/acl-org/acl-style-files).
+% Build: pdflatex main; bibtex main; pdflatex main; pdflatex main.
+% [review] => anonymized + line numbers for double-blind submission. For camera-ready,
+%   switch to \usepackage[final]{acl} and uncomment the author block below.
+% Numbers are traceable to experiments/results/*.json via \input{tables/*}.
 \documentclass[11pt]{article}
+\usepackage[review]{acl}
+\usepackage{times}
+\usepackage{latexsym}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
 \usepackage{booktabs}
 \usepackage{graphicx}
-\usepackage{url}
-\usepackage[round]{natbib}
-\usepackage{hyperref}
 
 \title{WikiHow-MY: A Human Post-Edited English--Myanmar Instructional MT Corpus
 and an Instruction-Faithfulness Score for Procedural Translation}
 \author{Anonymous (WMT 2026 submission)}
+% === CAMERA-READY AUTHOR BLOCK — uncomment for the de-anonymized version. ===
+% KEEP the anonymous \author above for double-blind WMT/ACL review: a name or any of
+% the resource links below in the SUBMITTED pdf de-anonymizes the author -> desk reject.
+% \author{Pyae Sone Kyaw \\ Independent Researcher \\ \texttt{pyaesonekyaw1022000@gmail.com}}
+% Resource links to add to the Release/Availability paragraph at camera-ready (all withheld for review):
+%   Model:      https://huggingface.co/PyaeSoneK/nllb-600m-wikihow-en-my
+%   Collection: https://huggingface.co/collections/PyaeSoneK/english-to-burmese-mt-wikihow-6a28b3f136f02ab48e0d62c4
+%   Code:       https://github.com/soneeee22000/wikihow-mt-my  (public; rehydration only, does NOT mirror English source)
+%   Kaggle:     <confirm notebook/kernel URL>  (training/eval reproducibility)
 \date{}
 
 \begin{document}
@@ -31,10 +40,14 @@ fine-tuned), Google Translate, and Gemini 2.5 with chrF++/spBLEU/BLEU/COMET, and
 that \emph{surface and semantic metrics disagree on the best system}. We then introduce
 the \textbf{Instruction Faithfulness Score (IFS)}, an interpretable, source-anchored
 metric that decomposes procedural fidelity into step, action, entity, and quantity
-preservation, and validate it against human \emph{instruction-followability} ratings---
-the first such validation for a low-resource language, where learned metrics such as
-COMET are known to be poorly calibrated.
-% TODO: add final IFS-vs-human correlation numbers once the human study completes.
+preservation, and put it to a human \emph{instruction-followability} test (8 raters, 370
+ratings)---the first such validation for a low-resource language, where learned metrics such as
+COMET are known to be poorly calibrated. The result is a cautionary one: IFS, like chrF++ and
+BLEU, is uncorrelated with human followability at the segment level ($r{\approx}0$) and, worse,
+\emph{inverts} the system ranking---rating the fine-tuned model humans find least followable as
+the best---because it saturates near its ceiling. We thus report not a validated metric but a
+concrete \emph{when-metrics-fail} case for procedural MT, and argue followability must be
+estimated per dimension rather than read off surface preservation.
 Finally, we probe whether decoding-time reranking can close the in-domain gap to the
 commercial system, and report a negative result: although a reference-optimal selection
 from the fine-tuned model's $n$-best \emph{beats} Google Translate, no reference-free
@@ -43,7 +56,6 @@ concrete decoding-time symptom of learned-metric miscalibration for Burmese.
 \end{abstract}
 
 \section{Introduction}
-% TODO: tighten after results are in.
 Procedural, instructional text---how-to guides, recipes, manuals---is high-stakes to
 translate: a reordered step, a dropped negation, or an altered quantity can make the
 instructions \emph{unfollowable}, a failure mode standard MT evaluation does not isolate.
@@ -58,7 +70,9 @@ We make three contributions:
 (2) a \textbf{benchmark} of open, commercial, and LLM systems showing that surface
 (chrF++/spBLEU) and semantic (COMET) metrics rank the systems differently (\S\ref{sec:bench});
 (3) the \textbf{Instruction Faithfulness Score (IFS)}, a procedural-fidelity metric for MT,
-validated against human followability in a setting where COMET is miscalibrated
+together with a human-followability study (\S\ref{sec:human}) showing that its automatic form---
+like chrF++ and BLEU---fails to track followability and inverts the system ranking, a
+\emph{when-metrics-fail} result for a setting where learned metrics are also miscalibrated
 \citep{falcao2024comet,africomet2024} (\S\ref{sec:ifs}).
 We additionally probe decoding-time reranking and report a negative result: the gain
 needed to match the commercial system is present in the fine-tuned model's $n$-best but
@@ -67,8 +81,12 @@ unreachable by any reference-free selector (\S\ref{sec:rerank}).
 \paragraph{Scope clarification.} ``Instruction-followability'' here is a property of a
 \emph{translation} (can a reader execute the procedure from the target text?), distinct
 from ``instruction-following'' in the LLM sense of a model obeying a prompt
-\citep{ifeval2023,xifbench2025}. We operationalize it as task-based MT evaluation
-\citep{gale_taskbased} in the functionalist/skopos tradition \citep{reissvermeer1984}.
+\citep{ifeval2023,xifbench2025}. It is likewise distinct from translation
+\emph{instruction-following} benchmarks \citep{ifmtbench2026}, which test whether an MT system
+obeys author-supplied constraints (format, terminology, register); we ask instead whether the
+resulting translation lets an end user carry out the procedure. We operationalize this as
+task-based MT evaluation \citep{gale_taskbased} in the functionalist/skopos tradition
+\citep{reissvermeer1984}.
 
 \section{Related Work}
 \paragraph{Low-resource and Burmese MT.} NLLB-200 \citep{nllb2024} is the standard open
@@ -85,12 +103,16 @@ COMET \citep{comet2020} and MetricX-24 \citep{metricx2024} lead segment-level co
 but are documented to be unreliable for low-resource languages
 \citep{falcao2024comet,africomet2024}. Entity- and number-preservation are established
 evaluation targets---WMT Critical Error Detection NUM/NAM \citep{wmtced2022}, manual entity
-accuracy M-ETA \citep{meta2024}, and challenge sets ACES \citep{aces2022}---so IFS
-\emph{adopts} (and cites), rather than claims, those two components. Procedural-correctness
+accuracy M-ETA \citep{meta2024}, challenge sets ACES \citep{aces2022}, and behavioural numeral
+testing \citep{wang2021numerals}---so IFS \emph{adopts} (and cites), rather than claims, those
+two components. Procedural-correctness
 metrics (action precision, step edit-distance, ingredient/quantity preservation) appear in
-recipe \emph{generation} \citep{recipegen2025}; we are, to our knowledge, the first to bring
-step-ordering and imperative-action preservation into \emph{translation} evaluation, and the
-first to validate against human followability. METEOR \citep{meteor2005} rewards
+recipe \emph{generation} \citep{recipegen2025}---we \emph{adapt} these signals rather than
+invent them. Decomposed \emph{reference-free} MT evaluation is itself not new either, existing
+along generic MQM dimensions \citep{park2024multidim}; but we are, to our knowledge, the first to
+operationalize step-ordering and imperative-action preservation as a \emph{procedural} axis for
+reference-free MT evaluation, and the first to validate an automatic procedural-fidelity MT
+metric against human followability---the first such validation for a low-resource language. METEOR \citep{meteor2005} rewards
 intra-sentence word order; IFS instead measures procedural \emph{step} order.
 
 \paragraph{Procedural text and followability.} WikiHow encodes ordered, goal-directed steps
@@ -114,8 +136,13 @@ average 93 characters (median 85). Myanmar text is normalized to Unicode (no Zaw
 detected) following the encoding considerations above.
 
 \paragraph{Splits.} We split \textbf{by article} (GroupShuffleSplit, seed 42) into
-train/dev/test of \textbf{8{,}302 / 908 / 846} pairs with \textbf{zero article overlap},
-avoiding the sentence-level leakage that would inflate a benchmark. Figure~\ref{fig:stats}
+train/dev/test of \textbf{8{,}302 / 908 / 846} pairs with \textbf{zero shared articles}.
+Article-disjoint splitting does not by itself preclude repeated boilerplate sentences across
+splits, so we additionally audit sentence-level leakage: only 2 of 846 test sources also
+occur in train (1 in dev), and \emph{zero} test (source, target) \emph{pairs} are shared with
+train or dev---so no test target is memorisable from training. Because the Myanmar references
+are newly produced by post-editing and were not previously public, the evaluation pairs likewise
+cannot appear in any benchmarked system's pre-training data. Figure~\ref{fig:stats}
 summarizes the distributions.
 
 \paragraph{Provenance and reference bias.} The corpus combines a professionally post-edited
@@ -172,7 +199,8 @@ reproduce many references near-verbatim. It does not---exact-match rates against
 are uniformly near-zero (Google Translate $0.24\%$, Gemini $0.24\%$, fine-tuned NLLB
 $0.47\%$), with Google Translate \emph{not} the leader and the few matches being trivially
 short segments. Second, a domain-controlled comparison on FLORES+ (Table~\ref{tab:flores}),
-whose references are independent professional translations, never post-edited from our systems.
+whose references are independent professional translations, never post-edited from our systems
+(and whose devtest is fully disjoint from our test set---zero shared source sentences or pairs).
 Crucially, Google Translate's lead over fine-tuned NLLB \emph{widens} from $+2.0$ chrF++
 in-domain to $+8.8$ on FLORES+. A reference bias favoring Google Translate would predict the
 opposite (a larger in-domain gap); the actual pattern shows that the residual reference effect
@@ -202,20 +230,54 @@ preservation; cf.\ \citealp{meta2024,wmtced2022}), and \textbf{quantity} (numera
 preservation, Arabic and Myanmar digits; cf.\ \citealp{wmtced2022}). Entity and quantity are
 \emph{adopted} signals; the step and action components, and their use as an MT metric, are
 novel to our knowledge (procedural-correctness metrics otherwise appear in generation,
-\citealp{recipegen2025}). The automatic components form a proxy; the action component is
-assessed in the human study.
+\citealp{recipegen2025}). The automatic components form a proxy for procedural fidelity, which we
+test directly against human followability in \S\ref{sec:human}.
 \input{tables/ifs_components.tex}
 
 \section{Human Validation}\label{sec:human}
-% TODO: results pending the Label Studio rating study.
 We validate IFS against human \emph{instruction-followability} ratings. Native-Burmese raters
-score a blind, randomized sample (40 source sentences $\times$ 4 systems $=160$ items) for
-followability and adequacy (1--5); a $\geq$50-item overlap subset is double-rated for
-ordinal Krippendorff's $\alpha$, with intra-rater test--retest and seeded quality-control
-items. We report \emph{segment-level} Spearman (primary) and Pearson correlations with
-95\% bootstrap CIs, and the Williams test \citep{graham2014williams} comparing IFS against
-COMET/chrF; we avoid system-level claims given small $n$ \citep{mathur2020tangled}, following
-\citet{kocmi2021ship}. \textbf{[Results to be inserted.]}
+scored a blind, randomized sample (40 source sentences $\times$ 4 systems $=160$ items) for
+followability and adequacy (1--5); a 30-item overlap subset was rated by all raters for
+ordinal Krippendorff's $\alpha$. Eight raters contributed 370 ratings, covering 150/160 items;
+the overlap block was completed by seven. We report \emph{segment-level} Spearman (primary) and
+Pearson correlations with 95\% percentile-bootstrap CIs (5{,}000 resamples) and the Williams
+test \citep{graham2014williams} comparing IFS against chrF++/BLEU; following
+\citet{mathur2020tangled,kocmi2021ship} we make no inferential system-level claim, but we report
+the four per-system means descriptively, as their pattern is the central finding.
+
+\paragraph{IFS does not track human followability.} At the segment level IFS is uncorrelated
+with followability (Table~\ref{tab:corr}): rating-level Pearson $r{=}0.04$ (95\% CI
+$[-0.06, 0.14]$, $p{=}0.47$, $n{=}370$); item-level $r{=}0.11$ ($p{=}0.17$, $n{=}150$). chrF++
+($r{=}0.08$) and BLEU ($r{=}0.03$) are no better, every CI straddles zero, and the Williams test
+cannot distinguish IFS from either ($p{=}0.49$, $0.95$). No automatic metric we tested---surface
+or structural---predicts whether a reader can follow the translation.
+
+\input{tables/ifs_correlation.tex}
+
+\paragraph{IFS inverts the system ranking.} The failure is not merely weak correlation but
+\emph{sign reversal} at the system level (Table~\ref{tab:human}). Humans rank Gemini most
+followable (4.35) and the fine-tuned NLLB least (3.58); IFS ranks them in the opposite order,
+scoring the fine-tuned NLLB highest (97.56) and never separating the systems by more than
+$\sim$3 points. The source-anchored fine-tune learns exactly the surface cues IFS
+rewards---copied entities, numerals, clause counts---while producing less-followable Burmese,
+so optimizing IFS would select the worst system for end users. This is our central
+\emph{when-metrics-fail} case: an interpretable, intuitively reasonable procedural metric is
+not just uninformative but actively misleading as a ranking signal.
+
+\input{tables/ifs_human_systems.tex}
+
+\paragraph{Mechanism and reliability.} The inversion is driven by range restriction: IFS
+saturates near its ceiling (mean 95.2/100, all four systems within 3 points), so it cannot
+discriminate systems that humans rate from 3.6 to 4.4 on the full scale. Inter-rater agreement
+is fair (ordinal Krippendorff's $\alpha{=}0.41$ for followability, $0.40$ for adequacy, over
+the 50-item overlap set)---expected for a subjective, skewed-high judgment, and below the
+$0.667$ tentative-conclusion threshold \citep{krippendorff2004}. Two factors keep the
+conclusion robust to this noise: the result is null in the \emph{same direction} at every level
+of aggregation (rating, item, system), and the per-system means each average 66--110 ratings,
+so per-rating disagreement cancels. We therefore read IFS's automatic form not as a validated
+quality metric but as evidence that procedural followability for Burmese is not recoverable
+from surface, source-anchored preservation alone---motivating the learned, per-dimension
+estimator we pursue in follow-on work.
 
 \section{Can Decoding-Time Reranking Close the Gap?}\label{sec:rerank}
 Google Translate's in-domain surface lead ($+2.0$ chrF++ over fine-tuned NLLB) invites a
@@ -255,12 +317,14 @@ followability validation. The human study uses a small expert panel. The NC lice
 downstream commercial use. The Gemini baseline is Flash (cost), weaker than Pro.
 
 \section{Conclusion}\label{sec:concl}
-% TODO: finalize after results.
 We release the first instructional en--my MTPE corpus, benchmark four systems (finding that
-metrics disagree), and propose IFS, a procedure-aware followability metric. Follow-on work
-uses IFS as an in-loop control signal in an agentic translate--reflect--repair system for
-low-resource procedural translation.
+surface and learned metrics disagree on the best one), and propose IFS, a procedure-aware
+metric whose automatic form we then show---through a human-followability study---fails to track
+followability and inverts the system ranking, alongside chrF++ and BLEU. Procedural
+followability for Burmese is thus not recoverable from surface, source-anchored preservation;
+follow-on work estimates it per dimension with a learned faithfulness model and uses that signal
+in an agentic translate--reflect--repair loop.
 
-\bibliographystyle{plainnat}
+% \bibliographystyle is set by acl.sty (acl_natbib); do not set it again here.
 \bibliography{references}
 \end{document}

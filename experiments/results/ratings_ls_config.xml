@@ -17,4 +17,28 @@
     <Header value="2) Adequacy (1-5): is the meaning fully preserved vs the English? 1 = meaning lost/wrong; 5 = fully preserved."/>
     <Rating name="adequacy" toName="translation" maxRating="5"/>
   </View>
+
+  <View style="margin-top:1.2em">
+    <Header value="3) Component checks: judge each against the English source. (The 'action/verb' check is the only human-only IFS component.)"/>
+    <Choices name="step_order" toName="translation" choice="single-radio" showInline="true">
+      <Header value="Step order preserved (no reordered/merged/dropped steps)?"/>
+      <Choice value="yes"/>
+      <Choice value="no"/>
+    </Choices>
+    <Choices name="action_correct" toName="translation" choice="single-radio" showInline="true">
+      <Header value="Action/verb correct (the reader would do the RIGHT action)?"/>
+      <Choice value="yes"/>
+      <Choice value="no"/>
+    </Choices>
+    <Choices name="entities_correct" toName="translation" choice="single-radio" showInline="true">
+      <Header value="Entities correct (names/objects/tools preserved)?"/>
+      <Choice value="yes"/>
+      <Choice value="no"/>
+    </Choices>
+    <Choices name="quantities_correct" toName="translation" choice="single-radio" showInline="true">
+      <Header value="Quantities/units correct (numbers, amounts, temperatures)?"/>
+      <Choice value="yes"/>
+      <Choice value="no"/>
+    </Choices>
+  </View>
 </View>

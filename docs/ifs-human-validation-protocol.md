@@ -23,9 +23,13 @@ system label hidden, order randomised), and rates:
 - **Instruction-Followability** (primary) — _could a Burmese reader carry out this step correctly and
   in the right order from the translation alone?_ 1 = would fail / do the wrong action; 3 = mostly
   right, minor ambiguity; 5 = perfectly followable.
-- **Component checks (binary, optional but recommended)** — to validate each IFS component against a
+- **Component checks (binary, now MANDATORY in the UI)** — to validate each IFS component against a
   human counterpart: step-order preserved (Y/N), action/verb correct (Y/N), entities correct (Y/N),
-  quantities/units correct (Y/N). The **action** check is the only human-only IFS component.
+  quantities/units correct (Y/N). The **action** check is the only human-only IFS component. Promoted
+  from "optional" to mandatory 2026-06-12 because (a) WMT needs the human action component, and (b) the
+  flagship measures whether a repair fixed the _specific flagged_ component — one instrument, two
+  papers (see `docs/flagship-rq4-protocol.md`). Collected via `<Choices>` widgets in
+  `ratings_ls_config.xml`; exported by `scripts/ls_export_to_csv.py`.
 
 ## 3. Sampling
 

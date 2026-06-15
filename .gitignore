@@ -63,3 +63,21 @@ experiments/results/*.log
 
 # reranking intermediates (large; Burmese candidates + QE scores, no English source)
 experiments/results/nbest/
+
+# Rater web app (separate Vercel project; its data/tasks.json bundles English source -> rehydration policy)
+rating-app/
+
+# MCP server config -- may hold API tokens, NEVER commit
+.mcp.json
+
+# Compiled PDFs and stray LaTeX build artifacts (keep .tex/.bib/.sty/.bst sources only)
+*.pdf
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.out
+paper/*.fls
+paper/*.fdb_latexmk
+paper/_*.log
+paper/build.log
+paper/flagship/

@@ -31,6 +31,8 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 PROC = os.path.join(ROOT, "data", "processed")
 RESULTS = os.path.join(ROOT, "experiments", "results")
 SEED = 42
+N_BOOT = 5000
+CI_LEVEL = 95
 LIKERT_MIN, LIKERT_MAX = 1, 5
 DEFAULT_SHEET = os.path.join(RESULTS, "ratings_sheet.csv")
 DEFAULT_KEY = os.path.join(RESULTS, "ratings_key.csv")
@@ -105,12 +107,34 @@ def williams_test(r_a: float, r_b: float, r_ab: float, n: int) -> dict:
     return {"t": round(t, 4), "p": round(2 * stats.t.sf(abs(t), df), 5), "df": df}
 
 
+def bootstrap_ci(metric_vals: list, human: list) -> dict:
+    """Percentile bootstrap CIs (paired resampling) for Pearson and Spearman r."""
+    rng = np.random.default_rng(SEED)
+    x, y = np.asarray(metric_vals, float), np.asarray(human, float)
+    n = len(x)
+    pear, spear = np.empty(N_BOOT), np.empty(N_BOOT)
+    for b in range(N_BOOT):
+        idx = rng.integers(0, n, n)
+        pear[b] = stats.pearsonr(x[idx], y[idx]).statistic
+        spear[b] = stats.spearmanr(x[idx], y[idx]).statistic
+    lo, hi = (100 - CI_LEVEL) / 2, 100 - (100 - CI_LEVEL) / 2
+    pear, spear = pear[~np.isnan(pear)], spear[~np.isnan(spear)]
+    return {
+        "pearson_ci": [round(float(np.percentile(pear, lo)), 4),
+                       round(float(np.percentile(pear, hi)), 4)],
+        "spearman_ci": [round(float(np.percentile(spear, lo)), 4),
+                        round(float(np.percentile(spear, hi)), 4)],
+        "n_boot": N_BOOT, "ci_level": CI_LEVEL,
+    }
+
+
 def correlate(metric_vals: list, human: list) -> dict:
-    """Pearson and Spearman of a metric against the human ratings, with p-values."""
+    """Pearson and Spearman of a metric vs human ratings, with p-values and bootstrap CIs."""
     pr = stats.pearsonr(metric_vals, human)
     sr = stats.spearmanr(metric_vals, human)
     return {"pearson": round(float(pr.statistic), 4), "pearson_p": round(float(pr.pvalue), 5),
-            "spearman": round(float(sr.statistic), 4), "spearman_p": round(float(sr.pvalue), 5)}
+            "spearman": round(float(sr.statistic), 4), "spearman_p": round(float(sr.pvalue), 5),
+            **bootstrap_ci(metric_vals, human)}
 
 
 def analyze(ratings_path: str, key_path: str) -> dict:
