@@ -1,0 +1,134 @@
+{
+  "n_ratings": 320,
+  "components": {
+    "quantity": {
+      "rating_level_all": {
+        "n": 320,
+        "n_yes": 277,
+        "n_no": 43,
+        "mean_when_yes": 1.0,
+        "mean_when_no": 1.0,
+        "pointbiserial_r": null,
+        "p": null,
+        "auc": null
+      },
+      "rating_level_informative": {
+        "n": 68,
+        "n_yes": 65,
+        "n_no": 3,
+        "mean_when_yes": 1.0,
+        "mean_when_no": 1.0,
+        "pointbiserial_r": null,
+        "p": null,
+        "auc": null
+      },
+      "item_level_all": {
+        "n": 130,
+        "n_yes": 123,
+        "n_no": 7,
+        "mean_when_yes": 1.0,
+        "mean_when_no": 1.0,
+        "pointbiserial_r": null,
+        "p": null,
+        "auc": null
+      },
+      "item_level_informative": {
+        "n": 25,
+        "n_yes": 25,
+        "n_no": 0,
+        "mean_when_yes": 1.0,
+        "mean_when_no": null,
+        "pointbiserial_r": null,
+        "p": null,
+        "auc": null
+      }
+    },
+    "entity": {
+      "rating_level_all": {
+        "n": 320,
+        "n_yes": 232,
+        "n_no": 88,
+        "mean_when_yes": 0.9504,
+        "mean_when_no": 0.9545,
+        "pointbiserial_r": -0.0087,
+        "p": 0.87725,
+        "auc": 0.4971
+      },
+      "rating_level_informative": {
+        "n": 38,
+        "n_yes": 29,
+        "n_no": 9,
+        "mean_when_yes": 0.6034,
+        "mean_when_no": 0.5556,
+        "pointbiserial_r": 0.0423,
+        "p": 0.8009,
+        "auc": 0.5307
+      },
+      "item_level_all": {
+        "n": 130,
+        "n_yes": 102,
+        "n_no": 28,
+        "mean_when_yes": 0.9363,
+        "mean_when_no": 0.8929,
+        "pointbiserial_r": 0.0701,
+        "p": 0.42814,
+        "auc": 0.5203
+      },
+      "item_level_informative": {
+        "n": 24,
+        "n_yes": 19,
+        "n_no": 5,
+        "mean_when_yes": 0.6579,
+        "mean_when_no": 0.4,
+        "pointbiserial_r": 0.2215,
+        "p": 0.29819,
+        "auc": 0.6474
+      }
+    },
+    "step": {
+      "rating_level_all": {
+        "n": 320,
+        "n_yes": 267,
+        "n_no": 53,
+        "mean_when_yes": 0.8976,
+        "mean_when_no": 0.8884,
+        "pointbiserial_r": 0.0174,
+        "p": 0.75695,
+        "auc": 0.5058
+      },
+      "rating_level_informative": {
+        "n": 320,
+        "n_yes": 267,
+        "n_no": 53,
+        "mean_when_yes": 0.8976,
+        "mean_when_no": 0.8884,
+        "pointbiserial_r": 0.0174,
+        "p": 0.75695,
+        "auc": 0.5058
+      },
+      "item_level_all": {
+        "n": 130,
+        "n_yes": 119,
+        "n_no": 11,
+        "mean_when_yes": 0.9034,
+        "mean_when_no": 0.8409,
+        "pointbiserial_r": 0.0857,
+        "p": 0.33247,
+        "auc": 0.547
+      },
+      "item_level_informative": {
+        "n": 130,
+        "n_yes": 119,
+        "n_no": 11,
+        "mean_when_yes": 0.9034,
+        "mean_when_no": 0.8409,
+        "pointbiserial_r": 0.0857,
+        "p": 0.33247,
+        "auc": 0.547
+      }
+    },
+    "action": {
+      "note": "IFS has no automatic action component; action_correct cannot be probed -- a structural gap in the metric."
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "n": 320,
+  "correlations": {
+    "ifs": {
+      "pearson": 0.0155,
+      "pearson_p": 0.7825,
+      "spearman": -0.0415,
+      "spearman_p": 0.45978
+    },
+    "chrf": {
+      "pearson": 0.0549,
+      "pearson_p": 0.32747,
+      "spearman": 0.0525,
+      "spearman_p": 0.34926
+    },
+    "bleu": {
+      "pearson": 0.0359,
+      "pearson_p": 0.52229,
+      "spearman": -0.0167,
+      "spearman_p": 0.76552
+    }
+  },
+  "williams_ifs_vs": {
+    "ifs_vs_chrf": {
+      "t": -0.5563,
+      "p": 0.57839,
+      "df": 317,
+      "ifs_higher": false
+    },
+    "ifs_vs_bleu": {
+      "t": -0.2468,
+      "p": 0.8052,
+      "df": 317,
+      "ifs_higher": false
+    }
+  },
+  "comet_included": false
+}

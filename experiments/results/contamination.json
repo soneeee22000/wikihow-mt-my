@@ -1,0 +1,32 @@
+{
+  "sizes": {
+    "train": 8302,
+    "dev": 908,
+    "test": 846,
+    "flores": 1012
+  },
+  "article_overlap": {
+    "test_vs_train": 0,
+    "test_vs_dev": 0,
+    "dev_vs_train": 0
+  },
+  "test_vs_train": {
+    "src_exact": 2,
+    "src_norm": 2,
+    "pair_exact": 0,
+    "pair_norm": 0
+  },
+  "test_vs_dev": {
+    "src_exact": 1,
+    "src_norm": 1,
+    "pair_exact": 0,
+    "pair_norm": 0
+  },
+  "test_vs_flores": {
+    "src_exact": 0,
+    "src_norm": 0,
+    "pair_exact": 0,
+    "pair_norm": 0
+  },
+  "test_internal_dup_src": 2
+}

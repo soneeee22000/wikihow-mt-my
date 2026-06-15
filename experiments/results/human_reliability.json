@@ -1,0 +1,97 @@
+{
+  "n_ratings": 320,
+  "n_raters": 7,
+  "reliability": {
+    "followability_alpha_ordinal": {
+      "alpha": 0.3842,
+      "n_units": 50,
+      "n_pairable_values": 240,
+      "scale_points": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "adequacy_alpha_ordinal": {
+      "alpha": 0.3764,
+      "n_units": 50,
+      "n_pairable_values": 240,
+      "scale_points": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    }
+  },
+  "item_level": {
+    "n_items": 130,
+    "human_followability_mean": 4.088,
+    "human_followability_sd": 1.086,
+    "metrics": {
+      "ifs": {
+        "pearson": 0.1101,
+        "pearson_p": 0.21237,
+        "spearman": 0.0778,
+        "spearman_p": 0.37921,
+        "mean": 95.04,
+        "sd": 10.45,
+        "min": 60.0,
+        "max": 100.0
+      },
+      "chrf": {
+        "pearson": 0.1195,
+        "pearson_p": 0.17573,
+        "spearman": 0.1123,
+        "spearman_p": 0.20325,
+        "mean": 38.15,
+        "sd": 11.62,
+        "min": 11.85,
+        "max": 62.14
+      },
+      "bleu": {
+        "pearson": 0.0832,
+        "pearson_p": 0.34638,
+        "spearman": -0.0003,
+        "spearman_p": 0.99739,
+        "mean": 7.32,
+        "sd": 9.83,
+        "min": 0.0,
+        "max": 51.7
+      }
+    }
+  },
+  "per_system": {
+    "gemini": {
+      "n": 56,
+      "human_mean": 4.25,
+      "human_sd": 0.98,
+      "ifs_mean": 95.54,
+      "ifs_sd": 8.95
+    },
+    "gtranslate": {
+      "n": 87,
+      "human_mean": 4.0,
+      "human_sd": 1.28,
+      "ifs_mean": 94.41,
+      "ifs_sd": 11.67
+    },
+    "nllb_finetuned": {
+      "n": 98,
+      "human_mean": 3.6,
+      "human_sd": 1.36,
+      "ifs_mean": 97.59,
+      "ifs_sd": 5.95
+    },
+    "nllb_zeroshot": {
+      "n": 79,
+      "human_mean": 4.08,
+      "human_sd": 1.2,
+      "ifs_mean": 96.05,
+      "ifs_sd": 8.33
+    }
+  }
+}
