@@ -122,18 +122,43 @@ def item_level(rows: list) -> dict:
 
 
 def per_system(rows: list) -> dict:
-    """Mean human followability and mean IFS per system (saturation by system)."""
+    """Mean human followability and mean IFS per system, aggregated over items.
+
+    Each item contributes once (its mean rating), not once per rating. The 30-item
+    overlap block carries up to 9 ratings and is unbalanced across systems, so a
+    rating-weighted mean would over-weight it; item-level means keep the 40 items
+    per system balanced.
+    """
     out = {}
-    by_sys = defaultdict(list)
+    by_item = defaultdict(list)
+    meta = {}
     for r in rows:
-        by_sys[r["system"]].append(r)
-    for sys_name, srows in sorted(by_sys.items()):
-        f = np.array([float(r["followability"]) for r in srows])
-        s = np.array([ifs.segment_ifs(r["src_en"], r["hyp_my"])["ifs"] * 100 for r in srows])
-        out[sys_name] = {"n": len(srows),
+        by_item[r["id"]].append(float(r["followability"]))
+        meta[r["id"]] = r
+    by_sys = defaultdict(list)
+    for item_id, vals in by_item.items():
+        by_sys[meta[item_id]["system"]].append(item_id)
+    for sys_name, ids in sorted(by_sys.items()):
+        f = np.array([float(np.mean(by_item[i])) for i in ids])
+        s = np.array([ifs.segment_ifs(meta[i]["src_en"], meta[i]["hyp_my"])["ifs"] * 100 for i in ids])
+        out[sys_name] = {"n": len(ids), "n_ratings": sum(len(by_item[i]) for i in ids),
                          "human_mean": round(float(f.mean()), 2), "human_sd": round(float(f.std(ddof=1)), 2),
                          "ifs_mean": round(float(s.mean()), 2), "ifs_sd": round(float(s.std(ddof=1)), 2)}
     return out
+
+
+def system_ranking(per_sys: dict) -> dict:
+    """Descriptive Spearman of per-system IFS means against human means (n=4 systems).
+
+    Reported without a p-value: n=4 is far too small for an inferential claim
+    \\citep{mathur2020tangled}.
+    """
+    names = sorted(per_sys)
+    human = [per_sys[n]["human_mean"] for n in names]
+    ifs_v = [per_sys[n]["ifs_mean"] for n in names]
+    return {"n_systems": len(names),
+            "spearman_human_ifs": round(float(stats.spearmanr(ifs_v, human).statistic), 3),
+            "ifs_spread": round(max(ifs_v) - min(ifs_v), 2)}
 
 
 def main() -> None:
@@ -161,6 +186,7 @@ def main() -> None:
         "item_level": item_level(rows),
         "per_system": per_system(rows),
     }
+    result["system_ranking"] = system_ranking(result["per_system"])
     print(json.dumps(result, ensure_ascii=False, indent=2))
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)

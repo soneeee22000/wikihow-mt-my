@@ -1,50 +1,50 @@
 {
-  "n": 370,
+  "n": 420,
   "correlations": {
     "ifs": {
-      "pearson": 0.038,
-      "pearson_p": 0.46626,
-      "spearman": -0.0228,
-      "spearman_p": 0.66153,
+      "pearson": 0.0837,
+      "pearson_p": 0.08658,
+      "spearman": -0.0072,
+      "spearman_p": 0.88365,
       "pearson_ci": [
-        -0.0627,
-        0.1437
+        -0.0229,
+        0.1917
       ],
       "spearman_ci": [
-        -0.1252,
-        0.0805
+        -0.1026,
+        0.0921
       ],
       "n_boot": 5000,
       "ci_level": 95
     },
     "chrf": {
-      "pearson": 0.0833,
-      "pearson_p": 0.10951,
-      "spearman": 0.068,
-      "spearman_p": 0.19192,
+      "pearson": 0.0989,
+      "pearson_p": 0.04287,
+      "spearman": 0.0801,
+      "spearman_p": 0.10096,
       "pearson_ci": [
-        -0.021,
-        0.1862
+        0.0049,
+        0.1895
       ],
       "spearman_ci": [
-        -0.0339,
-        0.1702
+        -0.0148,
+        0.1749
       ],
       "n_boot": 5000,
       "ci_level": 95
     },
     "bleu": {
-      "pearson": 0.0335,
-      "pearson_p": 0.52002,
-      "spearman": -0.0104,
-      "spearman_p": 0.84206,
+      "pearson": 0.0328,
+      "pearson_p": 0.50234,
+      "spearman": -0.0027,
+      "spearman_p": 0.95637,
       "pearson_ci": [
-        -0.0651,
-        0.1177
+        -0.0661,
+        0.119
       ],
       "spearman_ci": [
-        -0.1126,
-        0.0913
+        -0.0976,
+        0.0962
       ],
       "n_boot": 5000,
       "ci_level": 95
@@ -52,15 +52,15 @@
   },
   "williams_ifs_vs": {
     "ifs_vs_chrf": {
-      "t": -0.6877,
-      "p": 0.49205,
-      "df": 367,
+      "t": -0.2458,
+      "p": 0.80594,
+      "df": 417,
       "ifs_higher": false
     },
     "ifs_vs_bleu": {
-      "t": 0.0583,
-      "p": 0.95354,
-      "df": 367,
+      "t": 0.6973,
+      "p": 0.48599,
+      "df": 417,
       "ifs_higher": true
     }
   },

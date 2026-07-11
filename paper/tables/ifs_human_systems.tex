@@ -6,14 +6,14 @@
 \toprule
  & & \multicolumn{2}{c}{Human followability} & \multicolumn{2}{c}{IFS} \\
 \cmidrule(lr){3-4}\cmidrule(lr){5-6}
-System & $n$ & mean & sd & mean & sd \\
+System & items & mean & sd & mean & sd \\
 \midrule
-Gemini 2.5 (5-shot) & 66 & 4.35 & 0.94 & 95.76 & 8.44 \\
-Google Translate & 102 & 4.06 & 1.27 & 94.35 & 11.72 \\
-NLLB-200 (zero-shot) & 92 & 3.96 & 1.33 & 96.32 & 7.87 \\
-NLLB-200 (fine-tuned) & 110 & 3.58 & 1.42 & 97.56 & 5.85 \\
+Gemini 2.5 (5-shot) & 40 & 4.37 & 0.83 & 95.00 & 10.16 \\
+Google Translate & 40 & 4.24 & 1.09 & 95.33 & 10.09 \\
+NLLB-200 (fine-tuned) & 40 & 3.78 & 1.25 & 96.71 & 8.38 \\
+NLLB-200 (zero-shot) & 40 & 3.64 & 1.38 & 94.46 & 10.91 \\
 \bottomrule
 \end{tabular}
-\caption{Per-system human instruction-followability (1--5) vs.\ automatic IFS (0--100), from 8 raters / 370 ratings; rows sorted by human followability (best first). IFS \emph{inverts} the human ranking---it scores the fine-tuned NLLB, which humans rate least followable, highest---and saturates near its ceiling (all systems within $\sim$3 points) while humans use the full scale. Ordinal Krippendorff's $\alpha=0.41$ on the 50-item overlap block.}
+\caption{Per-system human instruction-followability (1--5) vs.\ automatic IFS (0--100), from 9 raters / 420 ratings; rows sorted by human followability (best first). Means are over the 40 items per system (each item once), not over ratings: the overlap block carries up to nine ratings and is unbalanced across systems, so rating-weighted means would over-weight it. IFS \emph{cannot rank}: it saturates near its ceiling (all four systems within 2.25 points) while humans use the full scale, it awards its highest score to NLLB-200 (fine-tuned)---which humans place 3 of 4---and it ranks Gemini 2.5 (5-shot), humans' best system, only 3. Descriptive system-level Spearman(human, IFS) $=0.20$ ($n{=}4$ systems; no $p$-value, following \citealp{mathur2020tangled}). Ordinal Krippendorff's $\alpha=0.39$ on the 60-item overlap block.}
 \label{tab:human}
 \end{table*}

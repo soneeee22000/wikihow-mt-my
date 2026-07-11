@@ -1,68 +1,68 @@
 {
   "model": "gemini-2.5-flash",
-  "n_items_judged": 150,
+  "n_items_judged": 160,
   "recovery_judge_vs_human": {
     "step_order": {
-      "n": 150,
-      "accuracy": 0.9,
-      "human_yes_rate": 0.88,
-      "judge_yes_rate": 0.98,
-      "phi": 0.3869
+      "n": 160,
+      "accuracy": 0.8938,
+      "human_yes_rate": 0.875,
+      "judge_yes_rate": 0.9812,
+      "phi": 0.3657
     },
     "action_correct": {
-      "n": 150,
-      "accuracy": 0.8933,
-      "human_yes_rate": 0.8533,
-      "judge_yes_rate": 0.9467,
-      "phi": 0.4887
+      "n": 160,
+      "accuracy": 0.8875,
+      "human_yes_rate": 0.8375,
+      "judge_yes_rate": 0.95,
+      "phi": 0.5208
     },
     "entities_correct": {
-      "n": 150,
-      "accuracy": 0.8,
-      "human_yes_rate": 0.78,
-      "judge_yes_rate": 0.8867,
-      "phi": 0.3178
+      "n": 160,
+      "accuracy": 0.7875,
+      "human_yes_rate": 0.7688,
+      "judge_yes_rate": 0.8938,
+      "phi": 0.2919
     },
     "quantities_correct": {
-      "n": 150,
-      "accuracy": 0.9133,
-      "human_yes_rate": 0.9067,
-      "judge_yes_rate": 0.9933,
-      "phi": 0.2553
+      "n": 160,
+      "accuracy": 0.925,
+      "human_yes_rate": 0.9187,
+      "judge_yes_rate": 0.9938,
+      "phi": 0.2667
     }
   },
   "usefulness_vs_followability": {
-    "n_items": 150,
+    "n_items": 160,
     "vs_followability": {
       "judge_composite": {
-        "pearson": 0.5422,
+        "pearson": 0.5312,
         "pearson_p": 0.0,
-        "spearman": 0.4012,
+        "spearman": 0.4224,
         "spearman_p": 0.0
       },
       "judge_step_order": {
-        "pearson": 0.3357,
-        "pearson_p": 3e-05,
-        "spearman": 0.2347,
-        "spearman_p": 0.00385
+        "pearson": 0.3127,
+        "pearson_p": 6e-05,
+        "spearman": 0.225,
+        "spearman_p": 0.00424
       },
       "judge_action_correct": {
-        "pearson": 0.4351,
+        "pearson": 0.4071,
         "pearson_p": 0.0,
-        "spearman": 0.2981,
-        "spearman_p": 0.00021
+        "spearman": 0.2874,
+        "spearman_p": 0.00023
       },
       "judge_entities_correct": {
-        "pearson": 0.4289,
+        "pearson": 0.4444,
         "pearson_p": 0.0,
-        "spearman": 0.3406,
-        "spearman_p": 2e-05
+        "spearman": 0.3712,
+        "spearman_p": 0.0
       },
       "judge_quantities_correct": {
-        "pearson": 0.2159,
-        "pearson_p": 0.00797,
-        "spearman": 0.1405,
-        "spearman_p": 0.08636
+        "pearson": 0.2018,
+        "pearson_p": 0.01051,
+        "spearman": 0.1356,
+        "spearman_p": 0.08732
       }
     }
   }

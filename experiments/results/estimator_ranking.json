@@ -1,0 +1,145 @@
+{
+  "n_items": 160,
+  "ranking": {
+    "per_system": {
+      "gemini": {
+        "n_items": 40,
+        "human_mean": 4.369,
+        "ifs_mean": 95.0,
+        "judge_mean": 1.0
+      },
+      "gtranslate": {
+        "n_items": 40,
+        "human_mean": 4.24,
+        "ifs_mean": 95.33,
+        "judge_mean": 0.981
+      },
+      "nllb_finetuned": {
+        "n_items": 40,
+        "human_mean": 3.777,
+        "ifs_mean": 96.71,
+        "judge_mean": 0.931
+      },
+      "nllb_zeroshot": {
+        "n_items": 40,
+        "human_mean": 3.642,
+        "ifs_mean": 94.46,
+        "judge_mean": 0.906
+      }
+    },
+    "spearman_human_ifs": 0.2,
+    "spearman_human_judge": 1.0,
+    "n_systems": 4
+  },
+  "usefulness": {
+    "n_items": 160,
+    "judge_composite": {
+      "pearson": 0.5312,
+      "pearson_p": 0.0,
+      "spearman": 0.4224,
+      "spearman_p": 0.0,
+      "pearson_ci": [
+        0.3671,
+        0.6556
+      ],
+      "spearman_ci": [
+        0.2607,
+        0.5555
+      ],
+      "n_boot": 5000,
+      "ci_level": 95
+    },
+    "ifs": {
+      "pearson": 0.1283,
+      "pearson_p": 0.10595,
+      "spearman": 0.0786,
+      "spearman_p": 0.32318,
+      "pearson_ci": [
+        -0.0368,
+        0.2907
+      ],
+      "spearman_ci": [
+        -0.0821,
+        0.2344
+      ],
+      "n_boot": 5000,
+      "ci_level": 95
+    },
+    "williams_judge_vs_ifs": {
+      "t": 4.4778,
+      "p": 1e-05,
+      "df": 157,
+      "judge_higher": true
+    }
+  },
+  "self_preference_control": {
+    "held_out_system": "gemini",
+    "n_items": 120,
+    "ranking": {
+      "per_system": {
+        "gtranslate": {
+          "n_items": 40,
+          "human_mean": 4.24,
+          "ifs_mean": 95.33,
+          "judge_mean": 0.981
+        },
+        "nllb_finetuned": {
+          "n_items": 40,
+          "human_mean": 3.777,
+          "ifs_mean": 96.71,
+          "judge_mean": 0.931
+        },
+        "nllb_zeroshot": {
+          "n_items": 40,
+          "human_mean": 3.642,
+          "ifs_mean": 94.46,
+          "judge_mean": 0.906
+        }
+      },
+      "spearman_human_ifs": 0.5,
+      "spearman_human_judge": 1.0,
+      "n_systems": 3
+    },
+    "usefulness": {
+      "n_items": 120,
+      "judge_composite": {
+        "pearson": 0.5495,
+        "pearson_p": 0.0,
+        "spearman": 0.4639,
+        "spearman_p": 0.0,
+        "pearson_ci": [
+          0.386,
+          0.6805
+        ],
+        "spearman_ci": [
+          0.2895,
+          0.6076
+        ],
+        "n_boot": 5000,
+        "ci_level": 95
+      },
+      "ifs": {
+        "pearson": 0.1835,
+        "pearson_p": 0.04489,
+        "spearman": 0.1397,
+        "spearman_p": 0.12817,
+        "pearson_ci": [
+          -0.0128,
+          0.3558
+        ],
+        "spearman_ci": [
+          -0.05,
+          0.3216
+        ],
+        "n_boot": 5000,
+        "ci_level": 95
+      },
+      "williams_judge_vs_ifs": {
+        "t": 3.6334,
+        "p": 0.00042,
+        "df": 117,
+        "judge_higher": true
+      }
+    }
+  }
+}

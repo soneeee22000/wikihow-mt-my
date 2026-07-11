@@ -7,6 +7,8 @@ data/processed/*.jsonl
 # A 20-row teaser (data/sample/) and the aggregate stats JSONs ARE committed.
 # Human-rating sheets embed English source text -> keep local (rehydration policy).
 experiments/results/ratings*.csv
+# Dated backups of those exports carry the same src_en column -> never publish.
+experiments/results/backups/
 
 # --- Models / checkpoints / runs -------------------------------------------
 ckpt/
